@@ -1,101 +1,129 @@
-# 💰 FinanceFlow Backend
+# 💰 FinanceFlow
 
-FinanceFlow Backend is a secure RESTful API powering the FinanceFlow personal finance management platform. Built with Node.js, Express.js, and MongoDB Atlas, it provides authentication, expense tracking, budget management, financial analytics, and profile management features.
+FinanceFlow is a full-stack personal finance management platform designed to help users track expenses, manage budgets, analyze spending habits, and gain financial insights through interactive dashboards.
+
+## 🌐 Live Demo
+
+🔗 Frontend: https://financeflow-mauve.vercel.app
+
+🔗 Backend API: https://financeflow-backend-l0vt.onrender.com
+
+---
 
 ## 🚀 Features
 
 ### 🔐 Authentication & Security
 
-* JWT-based Authentication
+* JWT Authentication
 * Protected Routes
-* Secure Password Handling
+* Secure Password Encryption
 * User Authorization
 
 ### 💵 Expense Management
 
-* Add Expenses
-* Update Expenses
-* Delete Expenses
+* Add, Edit, Delete Expenses
 * Expense Categorization
 * Expense History Tracking
+* Smart Filtering & Search
 
 ### 📊 Budget Management
 
-* Create Budget Plans
-* Budget Monitoring
-* Spending Tracking
-* Budget Performance Analysis
+* Budget Planning
+* Spending Monitoring
+* Budget Performance Tracking
+* Monthly Budget Analysis
 
 ### 📈 Financial Analytics
 
 * Expense Insights
 * Spending Trends
 * Category-wise Analysis
-* Financial Summary Reports
+* Interactive Charts & Dashboards
 
-### 👤 User Profile Management
+### 👤 Profile Management
 
-* User Profile Information
-* Account Settings
+* User Profile Settings
 * Personal Finance Preferences
+* Account Management
 
-### ☁️ Cloud Infrastructure
+### 📱 Mobile App Support
 
+* Capacitor Integration
+* Android Studio Project
+* Mobile-ready Architecture
+* Android APK Generation Support
+
+### ☁️ Cloud Deployment
+
+* Frontend deployed on Vercel
+* Backend deployed on Render
 * MongoDB Atlas Database
-* Render Deployment
-* RESTful API Architecture
 
 ---
 
 ## 🛠️ Tech Stack
 
+### Frontend
+
+* React.js
+* Vite
+* Tailwind CSS
+* Recharts
+* Framer Motion
+* Axios
+
 ### Backend
 
 * Node.js
 * Express.js
-
-### Database
-
 * MongoDB Atlas
 * Mongoose
-
-### Security
-
 * JWT Authentication
 * bcrypt.js
 
+### Mobile
+
+* Capacitor
+* Android Studio
+
 ### Deployment
 
+* Vercel
 * Render
-
----
-
-## 🌐 Live API
-
-Backend API:
-
-https://financeflow-backend-l0vt.onrender.com
+* MongoDB Atlas
 
 ---
 
 ## 📂 Project Structure
 
 ```bash
-FinanceFlow-Backend
+FinanceFlow
 │
-├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── config/
-├── utils/
-├── server.js
-└── package.json
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   └── server.js
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── android/
+│   └── package.json
+│
+├── app.js
+├── index.html
+├── style.css
+├── run-app.bat
+└── README.md
 ```
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Local Setup
 
 ### Clone Repository
 
@@ -103,48 +131,46 @@ FinanceFlow-Backend
 git clone https://github.com/Tejachaganti/financeflow-backend.git
 ```
 
-### Install Dependencies
+### Backend
 
 ```bash
+cd backend
 npm install
-```
-
-### Run Development Server
-
-```bash
 npm run dev
 ```
 
-### Run Production Server
+### Frontend
 
 ```bash
-npm start
+cd frontend
+npm install
+npm run dev
+```
+
+### Quick Launch
+
+```bash
+run-app.bat
 ```
 
 ---
 
 ## 🔑 Environment Variables
 
-Create a `.env` file:
+### Backend (.env)
 
 ```env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
-CLIENT_URL=*
+CLIENT_URL=http://localhost:5173
 ```
 
----
+### Frontend (.env)
 
-## 🚀 Deployment
-
-### Backend Hosting
-
-* Render
-
-### Database Hosting
-
-* MongoDB Atlas
+```env
+VITE_API_URL=https://financeflow-backend-l0vt.onrender.com/api
+```
 
 ---
 
@@ -153,9 +179,9 @@ CLIENT_URL=*
 * AI-powered Financial Insights
 * Savings Goal Tracking
 * Investment Tracking
-* Monthly Financial Reports
-* Mobile Application Integration
-* Advanced Analytics Dashboard
+* Recurring Expense Predictions
+* Financial Health Score
+* Smart Budget Recommendations
 
 ---
 
@@ -163,10 +189,12 @@ CLIENT_URL=*
 
 **Teja Chaganti**
 
-* GitHub: https://github.com/Tejachaganti
-* Portfolio: https://tejachaganti.github.io/portfolio/
-* LinkedIn: https://www.linkedin.com/in/chaganti-naga-veera-satya-teja-74b3b7327
+GitHub: https://github.com/Tejachaganti
+
+Portfolio: https://tejachaganti.github.io/portfolio/
+
+LinkedIn: https://www.linkedin.com/in/chaganti-naga-veera-satya-teja-74b3b7327
 
 ---
 
-⭐ Built as a Full-Stack Personal Finance Management Solution using Node.js, Express.js, MongoDB Atlas, JWT Authentication, and Cloud Deployment.
+⭐ Built as a Full-Stack Personal Finance Management Platform using React, Node.js, Express.js, MongoDB Atlas, JWT Authentication, Vercel, Render, and Android Studio.
