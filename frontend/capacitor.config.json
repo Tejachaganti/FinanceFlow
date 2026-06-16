@@ -1,0 +1,5 @@
+{
+  "appId": "com.teja.expensetracker",
+  "appName": "Personal Expense Tracker",
+  "webDir": "dist"
+}

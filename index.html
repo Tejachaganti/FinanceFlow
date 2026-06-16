@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceFlow Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero glass">
+      <div class="eyebrow">FinanceFlow</div>
+      <h1>AI-Powered Personal Finance Management Workspace</h1>
+      <p class="lead">
+        This repository has been upgraded from a beginner expense tracker into a professional split-stack fintech project with React, Tailwind, Express, MongoDB, JWT auth, analytics, exports, and AI-style insights.
+      </p>
+      <div class="actions">
+        <a class="primary" href="./README.md">Open README</a>
+        <button id="theme-toggle" class="secondary" type="button">Toggle Theme</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="glass card">
+        <h2>Frontend</h2>
+        <p>Modern React dashboard in <code>frontend/</code> with Tailwind CSS, Framer Motion, Recharts, protected routing, and reusable finance state.</p>
+        <ul>
+          <li>Dashboard analytics</li>
+          <li>Expense CRUD and filters</li>
+          <li>Budget and savings management</li>
+          <li>Profile, theme, and exports</li>
+        </ul>
+      </article>
+
+      <article class="glass card">
+        <h2>Backend</h2>
+        <p>Production-style Express API in <code>backend/</code> with MongoDB models, JWT auth, uploads, exports, and AI insight generation.</p>
+        <ul>
+          <li>Auth and protected routes</li>
+          <li>Expenses, budgets, profile APIs</li>
+          <li>Analytics and report exports</li>
+          <li>Receipt and avatar uploads</li>
+        </ul>
+      </article>
+
+      <article class="glass card">
+        <h2>Run Locally</h2>
+        <div class="command-block">
+          <p><span>Backend</span><code>cd backend && npm install && npm run dev</code></p>
+          <p><span>Frontend</span><code>cd frontend && npm install && npm run dev</code></p>
+        </div>
+        <p class="muted">Copy each <code>.env.example</code> to <code>.env</code> before starting.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
