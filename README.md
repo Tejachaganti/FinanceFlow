@@ -10,6 +10,35 @@ FinanceFlow is a full-stack personal finance management platform designed to hel
 
 ---
 
+
+## 📸 Screenshots
+
+### Landing Page
+
+![Landing Page](screenshots/landing-page.png)
+
+### Login Page
+
+![Login Page](screenshots/login-page.png)
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### Expense Management
+
+![Expense Management](screenshots/expenses-page.png)
+
+### Analytics & Reports
+
+![Analytics](screenshots/analytics-page.png)
+
+### Budget Management
+
+![Budget](screenshots/budget-page.png)
+
+---
+
 ## 🚀 Features
 
 ### 🔐 Authentication & Security
