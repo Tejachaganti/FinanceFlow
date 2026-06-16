@@ -216,7 +216,7 @@ VITE_API_URL=https://financeflow-backend-l0vt.onrender.com/api
 
 ## 👨‍💻 Author
 
-**Teja Chaganti**
+**Chaganti Naga Veera Satya Teja**
 
 GitHub: https://github.com/Tejachaganti
 
