@@ -1,9 +1,4 @@
-import {
-  Pencil,
-  Trash2,
-  Eye,
-  Calendar,
-} from "lucide-react";
+import ExpenseCard from "./ExpenseCard";
 
 const TransactionList = ({
   expenses,
@@ -14,12 +9,12 @@ const TransactionList = ({
 }) => {
   if (!expenses.length) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center shadow">
-        <h2 className="text-lg font-semibold">
+      <div className="rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-12 text-center">
+        <h2 className="text-xl font-semibold">
           No expenses found
         </h2>
 
-        <p className="text-gray-500 mt-2">
+        <p className="mt-2 text-gray-500">
           Try changing your filters or add a new expense.
         </p>
       </div>
@@ -27,104 +22,25 @@ const TransactionList = ({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow overflow-hidden">
-
-      <table className="w-full">
-
-        <thead className="bg-gray-100 dark:bg-slate-800">
-
-          <tr>
-
-            <th className="text-left p-4">Title</th>
-
-            <th className="text-left p-4">Category</th>
-
-            <th className="text-left p-4">Amount</th>
-
-            <th className="text-left p-4">Date</th>
-
-            <th className="text-center p-4">Actions</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {expenses.map((expense) => (
-
-            <tr
-              key={expense._id}
-              className="border-t hover:bg-gray-50 dark:hover:bg-slate-800"
-            >
-
-              <td className="p-4">
-                <div className="font-medium">
-                  {expense.title}
-                </div>
-
-                <div className="text-sm text-gray-500">
-                  {expense.merchant || "-"}
-                </div>
-              </td>
-
-              <td className="p-4">
-                {expense.category}
-              </td>
-
-              <td className="p-4 font-semibold text-red-600">
-                {currency}{Number(expense.amount).toLocaleString()}
-              </td>
-
-              <td className="p-4">
-
-                <div className="flex items-center gap-2">
-
-                  <Calendar size={16} />
-
-                  {new Date(expense.date).toLocaleDateString()}
-
-                </div>
-
-              </td>
-
-              <td className="p-4">
-
-                <div className="flex justify-center gap-2">
-
-                  <button
-                    onClick={() => onSelect(expense)}
-                    className="p-2 rounded-lg hover:bg-blue-100"
-                  >
-                    <Eye size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => onEdit(expense)}
-                    className="p-2 rounded-lg hover:bg-yellow-100"
-                  >
-                    <Pencil size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => onDelete(expense._id)}
-                    className="p-2 rounded-lg hover:bg-red-100"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
-
+    <div
+      className="
+        grid
+        gap-6
+        grid-cols-1
+        md:grid-cols-2
+        xl:grid-cols-3
+      "
+    >
+      {expenses.map((expense) => (
+        <ExpenseCard
+          key={expense._id}
+          expense={expense}
+          currency={currency}
+          onSelect={onSelect}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      ))}
     </div>
   );
 };

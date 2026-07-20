@@ -2,13 +2,26 @@ import { useMemo, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import useFinance from "../hooks/useFinance";
 
+import ExpenseHeader from "../components/expenses/ExpenseHeader";
 import ExpenseSummary from "../components/expenses/ExpenseSummary";
 import TransactionToolbar from "../components/expenses/TransactionToolbar";
 import TransactionList from "../components/expenses/TransactionList";
+import ExpenseAnalytics from "../components/expenses/ExpenseAnalytics";
 import ExpenseFormModal from "../components/expenses/ExpenseFormModal";
 import ExpenseDetailsDrawer from "../components/expenses/ExpenseDetailsDrawer";
-import ExpenseAnalytics from "../components/expenses/ExpenseAnalytics";
 import EmptyExpenseState from "../components/expenses/EmptyExpenseState";
+
+const defaultFilters = {
+  search: "",
+  category: "All",
+  merchant: "All",
+  account: "All",
+  priority: "All",
+  tags: [],
+  startDate: "",
+  endDate: "",
+  sortBy: "date",
+};
 
 const ExpensesPage = () => {
   const { user } = useAuth();
@@ -20,26 +33,18 @@ const ExpensesPage = () => {
     deleteExpense,
   } = useFinance();
 
-  const [selectedExpense, setSelectedExpense] = useState(null);
-  const [editingExpense, setEditingExpense] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filters, setFilters] = useState(defaultFilters);
 
-  const [filters, setFilters] = useState({
-    search: "",
-    category: "All",
-    merchant: "All",
-    account: "All",
-    priority: "All",
-    tags: [],
-    startDate: "",
-    endDate: "",
-    sortBy: "date",
-  });
+  const [selectedExpense, setSelectedExpense] = useState(null);
+
+  const [editingExpense, setEditingExpense] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredExpenses = useMemo(() => {
     let data = [...expenses];
 
-    if (filters.search) {
+    if (filters.search.trim()) {
       const keyword = filters.search.toLowerCase();
 
       data = data.filter((expense) =>
@@ -57,39 +62,45 @@ const ExpensesPage = () => {
 
     if (filters.category !== "All") {
       data = data.filter(
-        (expense) => expense.category === filters.category
+        (expense) =>
+          expense.category === filters.category
       );
     }
 
     if (filters.merchant !== "All") {
       data = data.filter(
-        (expense) => expense.merchant === filters.merchant
+        (expense) =>
+          expense.merchant === filters.merchant
       );
     }
 
     if (filters.account !== "All") {
       data = data.filter(
-        (expense) => expense.account === filters.account
+        (expense) =>
+          expense.account === filters.account
       );
     }
 
     if (filters.priority !== "All") {
       data = data.filter(
-        (expense) => expense.priority === filters.priority
+        (expense) =>
+          expense.priority === filters.priority
       );
     }
 
     if (filters.startDate) {
       data = data.filter(
         (expense) =>
-          new Date(expense.date) >= new Date(filters.startDate)
+          new Date(expense.date) >=
+          new Date(filters.startDate)
       );
     }
 
     if (filters.endDate) {
       data = data.filter(
         (expense) =>
-          new Date(expense.date) <= new Date(filters.endDate)
+          new Date(expense.date) <=
+          new Date(filters.endDate)
       );
     }
 
@@ -109,6 +120,21 @@ const ExpensesPage = () => {
     return data;
   }, [expenses, filters]);
 
+  const openCreateModal = () => {
+    setEditingExpense(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (expense) => {
+    setEditingExpense(expense);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setEditingExpense(null);
+    setIsModalOpen(false);
+  };
+
   const handleSave = async (payload) => {
     if (editingExpense) {
       await updateExpense(editingExpense._id, payload);
@@ -116,62 +142,59 @@ const ExpensesPage = () => {
       await createExpense(payload);
     }
 
-    setEditingExpense(null);
-    setIsModalOpen(false);
+    closeModal();
   };
-
-  const handleEdit = (expense) => {
-    setEditingExpense(expense);
-    setIsModalOpen(true);
-  };
-
-  if (!expenses.length) {
-    return (
-      <EmptyExpenseState
-        onCreate={() => setIsModalOpen(true)}
-      />
-    );
-  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
 
-      <ExpenseSummary
-        expenses={filteredExpenses}
-        currency={user?.currency}
+      <ExpenseHeader
+        onAddExpense={openCreateModal}
       />
 
-      <TransactionToolbar
-        filters={filters}
-        setFilters={setFilters}
-        onAddExpense={() => {
-          setEditingExpense(null);
-          setIsModalOpen(true);
-        }}
-      />
+      {expenses.length === 0 ? (
+        <EmptyExpenseState
+          onCreate={openCreateModal}
+        />
+      ) : (
+        <>
+          <ExpenseSummary
+            expenses={filteredExpenses}
+            currency={user?.currency}
+          />
 
-      <ExpenseAnalytics
-        expenses={filteredExpenses}
-      />
+          <TransactionToolbar
+            filters={filters}
+            setFilters={setFilters}
+            onAddExpense={openCreateModal}
+          />
 
-      <TransactionList
-        expenses={filteredExpenses}
-        currency={user?.currency}
-        onSelect={setSelectedExpense}
-        onEdit={handleEdit}
-        onDelete={deleteExpense}
-      />
+          <TransactionList
+            expenses={filteredExpenses}
+            currency={user?.currency}
+            onSelect={setSelectedExpense}
+            onEdit={openEditModal}
+            onDelete={deleteExpense}
+          />
+
+          <ExpenseAnalytics
+            expenses={filteredExpenses}
+          />
+        </>
+      )}
 
       <ExpenseFormModal
         open={isModalOpen}
         expense={editingExpense}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         onSubmit={handleSave}
       />
 
       <ExpenseDetailsDrawer
         expense={selectedExpense}
-        onClose={() => setSelectedExpense(null)}
+        onClose={() =>
+          setSelectedExpense(null)
+        }
       />
 
     </div>
