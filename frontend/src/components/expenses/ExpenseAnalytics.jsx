@@ -4,22 +4,31 @@ import {
   Cell,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
-import { PieChart as PieChartIcon, TrendingUp } from "lucide-react";
+
+import {
+  PieChart as PieChartIcon,
+  TrendingUp,
+  Trophy,
+} from "lucide-react";
+
+import { formatCurrency } from "../../utils/formatters";
 
 const COLORS = [
+  "#06B6D4",
   "#3B82F6",
+  "#8B5CF6",
   "#10B981",
   "#F59E0B",
   "#EF4444",
-  "#8B5CF6",
-  "#06B6D4",
   "#EC4899",
   "#84CC16",
 ];
 
-const ExpenseAnalytics = ({ expenses }) => {
+const ExpenseAnalytics = ({
+  expenses,
+  currency,
+}) => {
   const categoryTotals = {};
 
   expenses.forEach((expense) => {
@@ -37,30 +46,43 @@ const ExpenseAnalytics = ({ expenses }) => {
     })
   );
 
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const total = data.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
+
+  const sortedData = [...data].sort(
+    (a, b) => b.value - a.value
+  );
+
+  const topCategory = sortedData[0];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <section className="grid gap-6 xl:grid-cols-2">
+
       {/* Chart */}
 
-      <div className="rounded-3xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+      <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-7 shadow-lg">
 
-        <div className="flex items-center gap-3 mb-6">
+        <div className="mb-8 flex items-center gap-4">
 
-          <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg">
 
-            <PieChartIcon className="text-blue-600" size={22} />
+            <PieChartIcon
+              size={26}
+              className="text-white"
+            />
 
           </div>
 
           <div>
 
-            <h2 className="font-bold text-xl">
-              Spending by Category
+            <h2 className="text-xl font-bold text-white">
+              Spending Analytics
             </h2>
 
-            <p className="text-sm text-gray-500">
-              Distribution of your expenses
+            <p className="text-sm text-slate-400">
+              Category-wise expense distribution
             </p>
 
           </div>
@@ -69,7 +91,7 @@ const ExpenseAnalytics = ({ expenses }) => {
 
         <div className="h-80">
 
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer>
 
             <PieChart>
 
@@ -77,21 +99,28 @@ const ExpenseAnalytics = ({ expenses }) => {
                 data={data}
                 dataKey="value"
                 nameKey="name"
-                innerRadius={65}
+                innerRadius={75}
                 outerRadius={110}
-                paddingAngle={3}
+                paddingAngle={4}
               >
+
                 {data.map((entry, index) => (
                   <Cell
                     key={entry.name}
                     fill={COLORS[index % COLORS.length]}
                   />
                 ))}
+
               </Pie>
 
-              <Tooltip />
-
-              <Legend />
+              <Tooltip
+                contentStyle={{
+                  background: "#131A2A",
+                  border: "1px solid #334155",
+                  borderRadius: 16,
+                  color: "#fff",
+                }}
+              />
 
             </PieChart>
 
@@ -101,98 +130,150 @@ const ExpenseAnalytics = ({ expenses }) => {
 
       </div>
 
-      {/* Summary */}
+      {/* Breakdown */}
 
-      <div className="rounded-3xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+      <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-7 shadow-lg">
 
-        <div className="flex items-center gap-3 mb-6">
+        <div className="mb-8 flex items-center justify-between">
 
-          <div className="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+          <div className="flex items-center gap-4">
 
-            <TrendingUp className="text-emerald-600" size={22} />
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600">
+
+              <TrendingUp
+                className="text-white"
+                size={26}
+              />
+
+            </div>
+
+            <div>
+
+              <h2 className="text-xl font-bold text-white">
+                Category Breakdown
+              </h2>
+
+              <p className="text-sm text-slate-400">
+                Spending insights
+              </p>
+
+            </div>
 
           </div>
 
-          <div>
+          {topCategory && (
 
-            <h2 className="font-bold text-xl">
-              Category Breakdown
-            </h2>
+            <div className="rounded-2xl bg-slate-800 px-4 py-2">
 
-            <p className="text-sm text-gray-500">
-              Expense distribution
-            </p>
+              <div className="flex items-center gap-2 text-amber-400">
 
-          </div>
+                <Trophy size={16} />
+
+                <span className="text-xs font-semibold">
+                  Top Category
+                </span>
+
+              </div>
+
+              <p className="mt-1 text-sm font-bold text-white">
+                {topCategory.name}
+              </p>
+
+            </div>
+
+          )}
 
         </div>
 
-        {data.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">
-            No analytics available.
+        {sortedData.length === 0 ? (
+
+          <div className="flex h-64 items-center justify-center text-slate-500">
+
+            No analytics available
+
           </div>
+
         ) : (
-          <div className="space-y-4">
-            {data
-              .sort((a, b) => b.value - a.value)
-              .map((item, index) => {
-                const percent = total
-                  ? ((item.value / total) * 100).toFixed(1)
-                  : 0;
 
-                return (
-                  <div
-                    key={item.name}
-                    className="rounded-2xl border border-gray-100 dark:border-slate-700 p-4"
-                  >
-                    <div className="flex justify-between items-center mb-2">
+          <div className="space-y-5">
 
-                      <div className="flex items-center gap-3">
+            {sortedData.map((item, index) => {
+              const percent = total
+                ? ((item.value / total) * 100).toFixed(1)
+                : 0;
 
-                        <span
-                          className="w-3 h-3 rounded-full"
-                          style={{
-                            background:
-                              COLORS[index % COLORS.length],
-                          }}
-                        />
+              return (
 
-                        <span className="font-medium">
-                          {item.name}
-                        </span>
+                <div
+                  key={item.name}
+                  className="rounded-2xl border border-slate-700 bg-slate-900/60 p-5 transition hover:border-cyan-500/40"
+                >
 
-                      </div>
+                  <div className="mb-3 flex items-center justify-between">
 
-                      <span className="font-bold">
-                        ₹{item.value.toLocaleString()}
-                      </span>
+                    <div className="flex items-center gap-3">
 
-                    </div>
-
-                    <div className="w-full h-2 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden">
-
-                      <div
-                        className="h-full rounded-full"
+                      <span
+                        className="h-3 w-3 rounded-full"
                         style={{
-                          width: `${percent}%`,
                           background:
                             COLORS[index % COLORS.length],
                         }}
                       />
 
+                      <span className="font-medium text-white">
+                        {item.name}
+                      </span>
+
                     </div>
 
-                    <div className="text-xs text-gray-500 mt-2">
-                      {percent}% of total spending
-                    </div>
+                    <span className="font-bold text-white">
+                      {formatCurrency(
+                        item.value,
+                        currency
+                      )}
+                    </span>
 
                   </div>
-                );
-              })}
+
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-700">
+
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${percent}%`,
+                        background:
+                          COLORS[index % COLORS.length],
+                      }}
+                    />
+
+                  </div>
+
+                  <div className="mt-2 flex justify-between text-xs text-slate-400">
+
+                    <span>{percent}%</span>
+
+                    <span>
+                      {formatCurrency(
+                        item.value,
+                        currency
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              );
+            })}
+
           </div>
+
         )}
+
       </div>
-    </div>
+
+    </section>
   );
 };
 

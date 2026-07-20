@@ -54,64 +54,70 @@ const DashboardPage = () => {
       isPercentage: true,
     },
   ];
-console.log("Monthly Expenses:", analytics?.monthlyExpenses);
+
   return (
-    <div className="space-y-7">
+    <div className="min-h-screen bg-[#0B1120]">
 
-      {/* Hero */}
+      <div className="mx-auto max-w-7xl space-y-8 p-6 lg:p-8">
 
-      <DashboardHero
-        user={user}
-        snapshot={snapshot}
-      />
+        {/* Hero */}
 
-      {/* KPI Cards */}
-
-      <StatsCards
-        cards={cards}
-      />
-
-      {/* Monthly + Health */}
-
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-
-        <div className="xl:col-span-2">
-
-         <MonthlyLineChart
-  data={analytics?.monthlyExpenses || []}
-/>
-
-        </div>
-
-        <FinancialHealthCard
+        <DashboardHero
+          user={user}
           snapshot={snapshot}
         />
 
-      </section>
+        {/* Stats */}
 
-      {/* Category + AI */}
-
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-
-        <CategoryPieChart data={analytics?.categoryData || []} />
-
-        <InsightsPanel
-          insights={insights || []}
+        <StatsCards
+          cards={cards}
         />
 
-      </section>
+        {/* Charts */}
 
-      {/* Bottom */}
+        <section className="grid gap-8 xl:grid-cols-3">
 
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="xl:col-span-2">
 
-        <RecentTransactions
-          expenses={expenses || []}
-        />
+            <MonthlyLineChart
+              data={analytics?.monthlyExpenses || []}
+            />
 
-        <QuickActions />
+          </div>
 
-      </section>
+          <FinancialHealthCard
+            snapshot={snapshot}
+          />
+
+        </section>
+
+        {/* Analytics */}
+
+        <section className="grid gap-8 xl:grid-cols-2">
+
+          <CategoryPieChart
+            data={analytics?.categoryData || []}
+          />
+
+          <InsightsPanel
+            insights={insights || []}
+          />
+
+        </section>
+
+        {/* Bottom */}
+
+        <section className="grid gap-8 xl:grid-cols-2">
+
+          <RecentTransactions
+            expenses={expenses || []}
+          />
+
+          <QuickActions />
+
+        </section>
+
+      </div>
 
     </div>
   );

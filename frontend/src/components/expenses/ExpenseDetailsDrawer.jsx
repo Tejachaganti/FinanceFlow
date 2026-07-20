@@ -6,77 +6,114 @@ import {
   CreditCard,
   Wallet,
   StickyNote,
+  Receipt,
 } from "lucide-react";
 
+import { formatCurrency } from "../../utils/formatters";
+
 const DetailRow = ({ icon: Icon, label, value }) => (
-  <div className="flex items-start gap-4 rounded-2xl border border-gray-200 dark:border-slate-700 p-4">
-    <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-      <Icon size={20} className="text-blue-600" />
+  <div className="flex items-start gap-4 rounded-2xl border border-slate-700 bg-slate-900/60 p-4 transition hover:border-cyan-500/40">
+    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg">
+      <Icon
+        size={20}
+        className="text-white"
+      />
     </div>
 
     <div className="flex-1">
-      <p className="text-xs uppercase tracking-wide text-gray-500">
+
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
         {label}
       </p>
 
-      <p className="mt-1 font-medium break-words">
+      <p className="mt-1 break-words text-sm font-medium text-white">
         {value || "-"}
       </p>
+
     </div>
+
   </div>
 );
 
-const ExpenseDetailsDrawer = ({ expense, onClose }) => {
+const ExpenseDetailsDrawer = ({
+  expense,
+  currency,
+  onClose,
+}) => {
   if (!expense) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-end">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-md">
 
-      <div className="w-full max-w-md h-full bg-white dark:bg-slate-900 shadow-2xl overflow-y-auto">
+      {/* Drawer */}
+
+      <div className="h-full w-full max-w-md overflow-y-auto border-l border-slate-700 bg-[#131A2A] shadow-2xl">
 
         {/* Header */}
 
-        <div className="sticky top-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 p-6 flex items-center justify-between">
+        <div className="sticky top-0 z-10 border-b border-slate-700 bg-[#131A2A]/95 px-6 py-5 backdrop-blur">
 
-          <div>
+          <div className="flex items-center justify-between">
 
-            <h2 className="text-2xl font-bold">
-              Expense Details
-            </h2>
+            <div className="flex items-center gap-4">
 
-            <p className="text-sm text-gray-500">
-              Transaction information
-            </p>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg">
+
+                <Receipt
+                  className="text-white"
+                  size={22}
+                />
+
+              </div>
+
+              <div>
+
+                <h2 className="text-xl font-bold text-white">
+                  Expense Details
+                </h2>
+
+                <p className="text-sm text-slate-400">
+                  Transaction Information
+                </p>
+
+              </div>
+
+            </div>
+
+            <button
+              onClick={onClose}
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-slate-300 transition hover:bg-red-500 hover:text-white"
+            >
+              <X size={20} />
+            </button>
 
           </div>
-
-          <button
-            onClick={onClose}
-            className="w-10 h-10 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 flex items-center justify-center transition"
-          >
-            <X size={22} />
-          </button>
 
         </div>
 
         {/* Body */}
 
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
 
-          {/* Amount */}
+          {/* Amount Card */}
 
-          <div className="rounded-3xl bg-gradient-to-r from-red-500 to-pink-500 text-white p-6">
+          <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 p-6 shadow-xl">
 
-            <p className="text-sm opacity-80">
-              Total Amount
+            <p className="text-sm text-white/80">
+              Total Expense
             </p>
 
-            <h1 className="text-4xl font-bold mt-2">
-              ₹{Number(expense.amount).toLocaleString()}
+            <h1 className="mt-2 text-4xl font-bold text-white">
+              {formatCurrency(
+                expense.amount,
+                currency
+              )}
             </h1>
 
-            <div className="mt-4 inline-flex rounded-full bg-white/20 px-4 py-1 text-sm">
+            <div className="mt-5 inline-flex rounded-full bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur">
+
               {expense.category}
+
             </div>
 
           </div>
@@ -90,44 +127,59 @@ const ExpenseDetailsDrawer = ({ expense, onClose }) => {
           <DetailRow
             icon={Building2}
             label="Merchant"
-            value={expense.merchant || "Unknown Merchant"}
+            value={
+              expense.merchant ||
+              "Unknown Merchant"
+            }
           />
 
           <DetailRow
             icon={Wallet}
             label="Account"
-            value={expense.account || "Cash"}
+            value={
+              expense.account ||
+              "Cash"
+            }
           />
 
           <DetailRow
             icon={CreditCard}
             label="Payment Method"
-            value={expense.paymentMethod || "Not specified"}
+            value={
+              expense.paymentMethod ||
+              "Not Specified"
+            }
           />
 
           <DetailRow
             icon={Calendar}
             label="Date"
-            value={new Date(expense.date).toLocaleDateString()}
+            value={new Date(
+              expense.date
+            ).toLocaleDateString()}
           />
 
           {expense.notes && (
-            <div className="rounded-2xl border border-gray-200 dark:border-slate-700 p-5">
+            <div className="rounded-2xl border border-slate-700 bg-slate-900/60 p-5">
 
-              <div className="flex items-center gap-2 mb-3">
+              <div className="mb-4 flex items-center gap-3">
 
-                <StickyNote
-                  size={18}
-                  className="text-blue-600"
-                />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
 
-                <h3 className="font-semibold">
+                  <StickyNote
+                    size={18}
+                    className="text-white"
+                  />
+
+                </div>
+
+                <h3 className="font-semibold text-white">
                   Notes
                 </h3>
 
               </div>
 
-              <p className="text-gray-600 dark:text-gray-300 leading-7">
+              <p className="leading-7 text-slate-300">
                 {expense.notes}
               </p>
 

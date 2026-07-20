@@ -1,36 +1,45 @@
 import {
   IndianRupee,
-  CreditCard,
-  TrendingUp,
   CalendarDays,
+  TrendingUp,
+  Receipt,
 } from "lucide-react";
 
-const ExpenseSummary = ({ expenses, currency = "₹" }) => {
-  const now = new Date();
+import { formatCurrency } from "../../utils/formatters";
+
+const ExpenseSummary = ({ expenses, currency }) => {
+  const today = new Date();
 
   const totalSpent = expenses.reduce(
-    (sum, e) => sum + Number(e.amount || 0),
+    (sum, expense) => sum + Number(expense.amount || 0),
     0
   );
 
   const todaySpent = expenses
     .filter(
-      (e) =>
-        new Date(e.date).toDateString() === now.toDateString()
+      (expense) =>
+        new Date(expense.date).toDateString() === today.toDateString()
     )
-    .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+    .reduce(
+      (sum, expense) => sum + Number(expense.amount || 0),
+      0
+    );
 
   const monthSpent = expenses
-    .filter((e) => {
-      const d = new Date(e.date);
+    .filter((expense) => {
+      const date = new Date(expense.date);
+
       return (
-        d.getMonth() === now.getMonth() &&
-        d.getFullYear() === now.getFullYear()
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
       );
     })
-    .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+    .reduce(
+      (sum, expense) => sum + Number(expense.amount || 0),
+      0
+    );
 
-  const average =
+  const averageExpense =
     expenses.length > 0
       ? totalSpent / expenses.length
       : 0;
@@ -38,79 +47,74 @@ const ExpenseSummary = ({ expenses, currency = "₹" }) => {
   const cards = [
     {
       title: "Total Spent",
-      value: `${currency}${totalSpent.toLocaleString()}`,
+      value: formatCurrency(totalSpent, currency),
       subtitle: `${expenses.length} Transactions`,
       icon: IndianRupee,
-      color:
-        "from-indigo-500 to-blue-600",
+      color: "from-rose-500 to-pink-600",
     },
     {
       title: "Today's Spend",
-      value: `${currency}${todaySpent.toLocaleString()}`,
-      subtitle: "Today's expenses",
+      value: formatCurrency(todaySpent, currency),
+      subtitle: "Updated Today",
       icon: CalendarDays,
-      color:
-        "from-emerald-500 to-green-600",
+      color: "from-sky-500 to-cyan-600",
     },
     {
       title: "This Month",
-      value: `${currency}${monthSpent.toLocaleString()}`,
-      subtitle: "Current month",
+      value: formatCurrency(monthSpent, currency),
+      subtitle: "Current Billing Cycle",
       icon: TrendingUp,
-      color:
-        "from-orange-500 to-red-500",
+      color: "from-violet-500 to-indigo-600",
     },
     {
       title: "Average Expense",
-      value: `${currency}${average.toFixed(0)}`,
-      subtitle: "Per transaction",
-      icon: CreditCard,
-      color:
-        "from-violet-500 to-purple-600",
+      value: formatCurrency(averageExpense, currency),
+      subtitle: "Average Per Transaction",
+      icon: Receipt,
+      color: "from-emerald-500 to-green-600",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+    <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => {
         const Icon = card.icon;
 
         return (
           <div
             key={card.title}
-            className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="group relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10"
           >
+            {/* Top Accent */}
             <div
-              className={`absolute top-0 left-0 h-1 w-full bg-gradient-to-r ${card.color}`}
+              className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${card.color}`}
             />
 
-            <div className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {card.title}
-                  </p>
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-slate-400">
+                  {card.title}
+                </p>
 
-                  <h2 className="text-3xl font-bold mt-3">
-                    {card.value}
-                  </h2>
+                <h2 className="mt-4 text-3xl font-bold tracking-tight text-white">
+                  {card.value}
+                </h2>
 
-                  <p className="text-xs text-gray-400 mt-2">
-                    {card.subtitle}
-                  </p>
-                </div>
+                <p className="mt-3 text-sm text-slate-500">
+                  {card.subtitle}
+                </p>
+              </div>
 
-                <div
-                  className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${card.color} flex items-center justify-center text-white shadow-lg`}
-                >
-                  <Icon size={26} />
-                </div>
+              <div
+                className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${card.color} shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}
+              >
+                <Icon className="text-white" size={28} />
               </div>
             </div>
           </div>
         );
       })}
-    </div>
+    </section>
   );
 };
 

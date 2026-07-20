@@ -3,6 +3,7 @@ import {
   Plus,
   RotateCcw,
   ArrowUpDown,
+  Filter,
 } from "lucide-react";
 
 const categories = [
@@ -40,15 +41,17 @@ const TransactionToolbar = ({
   };
 
   return (
-    <div className="rounded-3xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-6">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6 shadow-lg">
 
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+
+        {/* Search */}
 
         <div className="relative flex-1">
 
           <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={20}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
           />
 
           <input
@@ -56,57 +59,95 @@ const TransactionToolbar = ({
             onChange={(e) =>
               updateFilter("search", e.target.value)
             }
-            placeholder="Search title, merchant..."
-            className="w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Search expenses, merchants..."
+            className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
           />
 
         </div>
 
-        <select
-          value={filters.category}
-          onChange={(e) =>
-            updateFilter("category", e.target.value)
-          }
-          className="rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3"
-        >
-          {categories.map((category) => (
-            <option key={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+        {/* Filters */}
 
-        <select
-          value={filters.sortBy}
-          onChange={(e) =>
-            updateFilter("sortBy", e.target.value)
-          }
-          className="rounded-xl border border-gray-300 dark:border-slate-700 bg-transparent px-4 py-3"
-        >
-          <option value="date">Newest</option>
-          <option value="amount">Highest Amount</option>
-          <option value="title">A-Z</option>
-        </select>
+        <div className="flex flex-wrap items-center gap-3">
 
-        <button
-          onClick={resetFilters}
-          className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 dark:border-slate-700 px-4 py-3 hover:bg-gray-100 dark:hover:bg-slate-800 transition"
-        >
-          <RotateCcw size={18} />
-          Reset
-        </button>
+          <div className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3">
 
-        <button
-          onClick={onAddExpense}
-          className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 transition"
-        >
-          <Plus size={18} />
-          Add Expense
-        </button>
+            <Filter
+              size={18}
+              className="text-slate-400"
+            />
+
+            <select
+              value={filters.category}
+              onChange={(e) =>
+                updateFilter("category", e.target.value)
+              }
+              className="bg-transparent text-sm text-white outline-none"
+            >
+              {categories.map((category) => (
+                <option
+                  key={category}
+                  className="bg-slate-900"
+                >
+                  {category}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3">
+
+            <ArrowUpDown
+              size={18}
+              className="text-slate-400"
+            />
+
+            <select
+              value={filters.sortBy}
+              onChange={(e) =>
+                updateFilter("sortBy", e.target.value)
+              }
+              className="bg-transparent text-sm text-white outline-none"
+            >
+              <option value="date" className="bg-slate-900">
+                Newest
+              </option>
+
+              <option value="amount" className="bg-slate-900">
+                Highest Amount
+              </option>
+
+              <option value="title" className="bg-slate-900">
+                A-Z
+              </option>
+
+            </select>
+
+          </div>
+
+          <button
+            onClick={resetFilters}
+            className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 px-5 py-3 text-slate-300 transition-all duration-300 hover:border-cyan-500/40 hover:bg-slate-800"
+          >
+            <RotateCcw size={18} />
+
+            Reset
+          </button>
+
+          <button
+            onClick={onAddExpense}
+            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cyan-500/40"
+          >
+            <Plus size={18} />
+
+            Add Expense
+          </button>
+
+        </div>
 
       </div>
 
-    </div>
+    </section>
   );
 };
 

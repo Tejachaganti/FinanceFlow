@@ -5,6 +5,8 @@ import {
   CreditCard,
 } from "lucide-react";
 
+import { formatCurrency } from "../../utils/formatters";
+
 const DashboardHero = ({ user, snapshot }) => {
   const hour = new Date().getHours();
 
@@ -18,47 +20,84 @@ const DashboardHero = ({ user, snapshot }) => {
       label: "Savings",
       value: snapshot?.savings || 0,
       icon: Wallet,
-      color: "from-blue-500 to-cyan-500",
+      color: "text-cyan-400",
+      bg: "bg-cyan-500/10",
     },
     {
       label: "Spent",
       value: snapshot?.spent || 0,
       icon: ArrowDown,
-      color: "from-pink-500 to-rose-500",
+      color: "text-red-400",
+      bg: "bg-red-500/10",
     },
     {
       label: "Remaining",
       value: snapshot?.remaining || 0,
       icon: PieChart,
-      color: "from-orange-400 to-amber-500",
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
     },
     {
       label: "Total Balance",
       value: snapshot?.balance || 0,
       icon: CreditCard,
-      color: "from-green-500 to-emerald-500",
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
     },
   ];
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#4F46E5] via-[#5B3DF5] to-[#2563EB] p-8 shadow-2xl">
+    <section className="relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
 
-      {/* Background decoration */}
-      <div className="absolute right-0 top-0 h-full w-96 opacity-10">
-        <div className="absolute right-0 top-0 h-80 w-80 rounded-full bg-white blur-3xl" />
-      </div>
+      {/* Background Glow */}
+
+      <div className="absolute -top-32 right-0 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
+      <div className="absolute -bottom-24 left-0 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
 
       <div className="relative z-10">
 
-        <h1 className="text-4xl font-bold text-white">
-          {greeting}, {user?.name?.split(" ")[0]} 👋
-        </h1>
+        {/* Top */}
 
-        <p className="mt-2 text-indigo-100">
-          Here's your financial overview.
-        </p>
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
 
-        <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div>
+
+            <p className="text-sm font-medium uppercase tracking-[0.25em] text-cyan-400">
+              Finance Dashboard
+            </p>
+
+            <h1 className="mt-3 text-4xl font-bold text-white">
+              {greeting},{" "}
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                {user?.name?.split(" ")[0]}
+              </span>
+            </h1>
+
+            <p className="mt-4 max-w-xl text-lg text-slate-400">
+              Welcome back. Here's a quick overview of your finances today.
+            </p>
+
+          </div>
+
+          {/* Balance */}
+
+          <div className="rounded-3xl bg-gradient-to-br from-cyan-500 to-blue-600 p-8 shadow-xl shadow-cyan-500/20">
+
+            <p className="text-cyan-100">
+              Available Balance
+            </p>
+
+            <h2 className="mt-3 text-4xl font-bold text-white">
+              {formatCurrency(snapshot?.balance || 0)}
+            </h2>
+
+          </div>
+
+        </div>
+
+        {/* Stats */}
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
           {items.map((item) => {
             const Icon = item.icon;
@@ -66,23 +105,34 @@ const DashboardHero = ({ user, snapshot }) => {
             return (
               <div
                 key={item.label}
-                className="flex items-center gap-4"
+                className="rounded-3xl border border-slate-700 bg-slate-900/60 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
               >
-                <div
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} shadow-lg`}
-                >
-                  <Icon size={24} className="text-white" />
+
+                <div className="flex items-center justify-between">
+
+                  <div>
+
+                    <p className="text-sm text-slate-400">
+                      {item.label}
+                    </p>
+
+                    <h3 className="mt-3 text-2xl font-bold text-white">
+                      {formatCurrency(item.value)}
+                    </h3>
+
+                  </div>
+
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg}`}
+                  >
+                    <Icon
+                      size={26}
+                      className={item.color}
+                    />
+                  </div>
+
                 </div>
 
-                <div>
-                  <p className="text-sm text-indigo-100">
-                    {item.label}
-                  </p>
-
-                  <h2 className="mt-1 text-3xl font-bold text-white">
-                    ₹{item.value}
-                  </h2>
-                </div>
               </div>
             );
           })}
@@ -90,6 +140,7 @@ const DashboardHero = ({ user, snapshot }) => {
         </div>
 
       </div>
+
     </section>
   );
 };

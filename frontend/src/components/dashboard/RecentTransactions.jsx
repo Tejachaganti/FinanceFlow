@@ -8,7 +8,11 @@ import {
   Wallet,
   ArrowUpRight,
 } from "lucide-react";
-import { formatCurrency, formatDate } from "../../utils/formatters";
+
+import {
+  formatCurrency,
+  formatDate,
+} from "../../utils/formatters";
 
 const categoryIcons = {
   Food: <Utensils size={18} />,
@@ -19,77 +23,153 @@ const categoryIcons = {
   Healthcare: <HeartPulse size={18} />,
 };
 
-const RecentTransactions = ({ expenses = [], currency }) => {
+const RecentTransactions = ({
+  expenses = [],
+  currency,
+}) => {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-xl">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
 
-      <div className="mb-6 flex items-center justify-between">
+      {/* Header */}
+
+      <div className="mb-8 flex items-center justify-between">
+
         <div>
-          <h2 className="text-xl font-bold text-white">
+
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-400">
+
+            Transactions
+
+          </p>
+
+          <h2 className="mt-2 text-2xl font-bold text-white">
+
             Recent Transactions
+
           </h2>
 
-          <p className="text-sm text-slate-400">
-            {expenses.length} transactions
+          <p className="mt-2 text-slate-400">
+
+            {expenses.length} recent transactions
+
           </p>
+
         </div>
 
-        <div className="rounded-2xl bg-indigo-500/20 p-3 text-indigo-400">
-          <Wallet size={22} />
+        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20">
+
+          <Wallet
+            size={28}
+            className="text-white"
+          />
+
         </div>
+
       </div>
 
-      <div className="space-y-4">
+      {/* Empty */}
 
-        {expenses.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-700 py-10 text-center text-slate-400">
-            No transactions yet.
-          </div>
-        )}
+      {!expenses.length && (
 
-        {expenses.slice(0, 6).map((expense) => (
-          <div
-            key={expense._id}
-            className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/40 p-4 transition-all duration-300 hover:border-indigo-500 hover:bg-slate-900/70"
-          >
-            <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-700 py-16">
 
-              <div className="rounded-xl bg-indigo-500/20 p-3 text-indigo-400">
-                {categoryIcons[expense.category] || <ShoppingBag size={18} />}
-              </div>
+          <Wallet
+            size={42}
+            className="mb-5 text-slate-500"
+          />
 
-              <div>
-                <h3 className="font-semibold text-white">
-                  {expense.title}
-                </h3>
+          <h3 className="text-xl font-semibold text-white">
 
-                <div className="mt-1 flex items-center gap-2 text-sm text-slate-400">
-                  <span>{expense.category}</span>
-                  <span>•</span>
-                  <span>{formatDate(expense.date)}</span>
+            No Transactions Yet
+
+          </h3>
+
+          <p className="mt-3 max-w-sm text-center text-slate-400">
+
+            Your recent expenses will appear here once
+            you start tracking your spending.
+
+          </p>
+
+        </div>
+
+      )}
+
+      {/* Transactions */}
+
+      {!!expenses.length && (
+
+        <div className="space-y-4">
+
+          {expenses.slice(0, 6).map((expense) => (
+
+            <div
+              key={expense._id}
+              className="rounded-3xl border border-slate-700 bg-slate-900/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
+            >
+
+              <div className="flex items-center justify-between">
+
+                <div className="flex items-center gap-4">
+
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
+
+                    {categoryIcons[expense.category] || (
+                      <ShoppingBag size={18} />
+                    )}
+
+                  </div>
+
+                  <div>
+
+                    <h3 className="text-lg font-semibold text-white">
+
+                      {expense.title}
+
+                    </h3>
+
+                    <p className="mt-2 text-sm text-slate-400">
+
+                      {expense.category} • {formatDate(expense.date)}
+
+                    </p>
+
+                  </div>
+
                 </div>
+
+                <div className="text-right">
+
+                  <div className="flex items-center justify-end gap-2 text-xl font-bold text-rose-400">
+
+                    <ArrowUpRight size={18} />
+
+                    {formatCurrency(
+                      expense.amount,
+                      currency
+                    )}
+
+                  </div>
+
+                  <span className="mt-3 inline-flex rounded-full bg-rose-500/10 px-3 py-1 text-xs font-medium text-rose-300">
+
+                    Expense
+
+                  </span>
+
+                </div>
+
               </div>
 
             </div>
 
-            <div className="text-right">
+          ))}
 
-              <div className="flex items-center justify-end gap-1 text-rose-400 font-bold">
-                <ArrowUpRight size={16} />
-                {formatCurrency(expense.amount, currency)}
-              </div>
+        </div>
 
-              <span className="mt-1 inline-block rounded-full bg-rose-500/20 px-2 py-1 text-xs text-rose-300">
-                Expense
-              </span>
+      )}
 
-            </div>
-          </div>
-        ))}
-
-      </div>
-
-    </div>
+    </section>
   );
 };
 

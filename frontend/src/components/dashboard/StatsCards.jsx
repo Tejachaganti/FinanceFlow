@@ -12,29 +12,30 @@ import { formatCurrency } from "../../utils/formatters";
 const config = {
   blue: {
     icon: Wallet,
-    bg: "bg-blue-500/15",
-    color: "text-blue-400",
+    bg: "bg-cyan-500/10",
+    color: "text-cyan-400",
   },
   green: {
     icon: TrendingDown,
-    bg: "bg-emerald-500/15",
+    bg: "bg-emerald-500/10",
     color: "text-emerald-400",
   },
   purple: {
     icon: PieChart,
-    bg: "bg-violet-500/15",
+    bg: "bg-violet-500/10",
     color: "text-violet-400",
   },
   orange: {
     icon: Target,
-    bg: "bg-amber-500/15",
+    bg: "bg-amber-500/10",
     color: "text-amber-400",
   },
 };
 
 const StatsCards = ({ cards, currency }) => {
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+
       {cards.map((card, index) => {
         const item = config[card.color] || config.blue;
         const Icon = item.icon;
@@ -42,25 +43,37 @@ const StatsCards = ({ cards, currency }) => {
         return (
           <motion.div
             key={card.label}
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.08 }}
-            whileHover={{
-              y: -5,
-              transition: { duration: 0.2 },
+            transition={{
+              delay: index * 0.08,
+              duration: 0.4,
             }}
-            className="rounded-3xl border border-white/10 bg-[#131D33] p-6 shadow-xl"
+            whileHover={{
+              y: -8,
+            }}
+            className="group relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6 transition-all duration-300 hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/10"
           >
-            <div className="flex items-start justify-between">
+
+            {/* Background Glow */}
+
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan-500/5 blur-3xl transition-all duration-300 group-hover:bg-cyan-500/10" />
+
+            {/* Header */}
+
+            <div className="relative flex items-start justify-between">
 
               <div
                 className={`flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg}`}
               >
-                <Icon className={item.color} size={26} />
+                <Icon
+                  size={26}
+                  className={item.color}
+                />
               </div>
 
               <div
-                className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs ${
+                className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
                   card.trend === "up"
                     ? "bg-emerald-500/10 text-emerald-400"
                     : "bg-rose-500/10 text-rose-400"
@@ -77,23 +90,49 @@ const StatsCards = ({ cards, currency }) => {
 
             </div>
 
-            <p className="mt-6 text-sm text-slate-400">
-              {card.label}
-            </p>
+            {/* Content */}
 
-            <h2 className="mt-2 text-4xl font-bold text-white">
-              {card.isPercentage
-                ? `${card.value}%`
-                : formatCurrency(card.value, currency)}
-            </h2>
+            <div className="relative mt-8">
 
-            <p className="mt-2 text-sm text-slate-500">
-              {card.caption}
-            </p>
+              <p className="text-sm font-medium text-slate-400">
+                {card.label}
+              </p>
+
+              <h2 className="mt-3 text-3xl font-bold text-white">
+
+                {card.isPercentage
+                  ? `${card.value}%`
+                  : formatCurrency(card.value, currency)}
+
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                {card.caption}
+              </p>
+
+            </div>
+
+            {/* Bottom Accent */}
+
+            <div className="relative mt-6 h-1 overflow-hidden rounded-full bg-slate-800">
+
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: "75%" }}
+                transition={{
+                  delay: index * 0.1,
+                  duration: 0.8,
+                }}
+                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+              />
+
+            </div>
+
           </motion.div>
         );
       })}
-    </div>
+
+    </section>
   );
 };
 

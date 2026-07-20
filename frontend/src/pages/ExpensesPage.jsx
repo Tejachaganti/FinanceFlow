@@ -146,57 +146,60 @@ const ExpensesPage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen bg-[#0B1120]">
+      <div className="mx-auto max-w-7xl space-y-8 p-6 lg:p-8">
 
-      <ExpenseHeader
-        onAddExpense={openCreateModal}
-      />
-
-      {expenses.length === 0 ? (
-        <EmptyExpenseState
-          onCreate={openCreateModal}
+        <ExpenseHeader
+          onAddExpense={openCreateModal}
+          totalExpenses={filteredExpenses.length}
         />
-      ) : (
-        <>
-          <ExpenseSummary
-            expenses={filteredExpenses}
-            currency={user?.currency}
+
+        {expenses.length === 0 ? (
+          <EmptyExpenseState
+            onCreate={openCreateModal}
           />
+        ) : (
+          <>
+            <ExpenseSummary
+              expenses={filteredExpenses}
+              currency={user?.currency}
+            />
 
-          <TransactionToolbar
-            filters={filters}
-            setFilters={setFilters}
-            onAddExpense={openCreateModal}
-          />
+            <TransactionToolbar
+              filters={filters}
+              setFilters={setFilters}
+              onAddExpense={openCreateModal}
+            />
 
-          <TransactionList
-            expenses={filteredExpenses}
-            currency={user?.currency}
-            onSelect={setSelectedExpense}
-            onEdit={openEditModal}
-            onDelete={deleteExpense}
-          />
+            <TransactionList
+              expenses={filteredExpenses}
+              currency={user?.currency}
+              onSelect={setSelectedExpense}
+              onEdit={openEditModal}
+              onDelete={deleteExpense}
+            />
 
-          <ExpenseAnalytics
-            expenses={filteredExpenses}
-          />
-        </>
-      )}
+            <ExpenseAnalytics
+              expenses={filteredExpenses}
+              currency={user?.currency}
+            />
+          </>
+        )}
 
-      <ExpenseFormModal
-        open={isModalOpen}
-        expense={editingExpense}
-        onClose={closeModal}
-        onSubmit={handleSave}
-      />
+        <ExpenseFormModal
+          open={isModalOpen}
+          expense={editingExpense}
+          onClose={closeModal}
+          onSubmit={handleSave}
+        />
 
-      <ExpenseDetailsDrawer
-        expense={selectedExpense}
-        onClose={() =>
-          setSelectedExpense(null)
-        }
-      />
+        <ExpenseDetailsDrawer
+          expense={selectedExpense}
+          currency={user?.currency}
+          onClose={() => setSelectedExpense(null)}
+        />
 
+      </div>
     </div>
   );
 };

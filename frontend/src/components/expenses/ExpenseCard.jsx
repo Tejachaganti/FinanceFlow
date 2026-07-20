@@ -14,138 +14,157 @@ import {
   Receipt,
 } from "lucide-react";
 
+import { formatCurrency } from "../../utils/formatters";
+
 const categoryConfig = {
   Food: {
     icon: UtensilsCrossed,
-    color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-300",
+    color: "from-orange-500 to-red-500",
+    badge: "bg-orange-500/15 text-orange-300",
   },
   Shopping: {
     icon: ShoppingBag,
-    color: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300",
+    color: "from-purple-500 to-pink-500",
+    badge: "bg-purple-500/15 text-purple-300",
   },
   Travel: {
     icon: Car,
-    color: "bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300",
+    color: "from-sky-500 to-cyan-500",
+    badge: "bg-sky-500/15 text-sky-300",
   },
   Entertainment: {
     icon: Film,
-    color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-300",
+    color: "from-pink-500 to-rose-500",
+    badge: "bg-pink-500/15 text-pink-300",
   },
   Bills: {
     icon: Home,
-    color: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300",
+    color: "from-red-500 to-orange-500",
+    badge: "bg-red-500/15 text-red-300",
   },
   Health: {
     icon: HeartPulse,
-    color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300",
+    color: "from-green-500 to-emerald-500",
+    badge: "bg-green-500/15 text-green-300",
   },
 };
 
 const getRelativeDate = (date) => {
   const today = new Date();
-  const expenseDate = new Date(date);
+  const d = new Date(date);
 
   const diff = Math.floor(
     (today.setHours(0, 0, 0, 0) -
-      expenseDate.setHours(0, 0, 0, 0)) /
-      86400000
+      d.setHours(0, 0, 0, 0)) / 86400000
   );
 
   if (diff === 0) return "Today";
   if (diff === 1) return "Yesterday";
 
-  return expenseDate.toLocaleDateString();
+  return d.toLocaleDateString();
 };
 
 const ExpenseCard = ({
   expense,
-  currency = "₹",
+  currency,
   onSelect,
   onEdit,
   onDelete,
 }) => {
-  const config =
-    categoryConfig[expense.category] || {
-      icon: Receipt,
-      color:
-        "bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-gray-300",
-    };
+  const config = categoryConfig[expense.category] || {
+    icon: Receipt,
+    color: "from-slate-500 to-slate-700",
+    badge: "bg-slate-700/30 text-slate-300",
+  };
 
   const Icon = config.icon;
 
   return (
-    <div className="group rounded-3xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="group relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10">
 
-      {/* Top */}
+      <div
+        className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${config.color}`}
+      />
 
-      <div className="flex justify-between items-start">
+      <div className="flex items-start justify-between">
 
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
 
           <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center ${config.color}`}
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${config.color} shadow-lg transition-all duration-300 group-hover:scale-110`}
           >
-            <Icon size={26} />
+            <Icon
+              className="text-white"
+              size={26}
+            />
           </div>
 
           <div>
-            <h3 className="font-semibold text-lg">
+
+            <h3 className="text-lg font-semibold text-white">
               {expense.title}
             </h3>
 
-            <p className="text-gray-500 text-sm">
+            <p className="mt-1 text-sm text-slate-400">
               {expense.merchant || "Unknown Merchant"}
             </p>
+
           </div>
 
         </div>
 
         <div className="text-right">
 
-          <div className="text-2xl font-bold text-red-500">
-            {currency}
-            {Number(expense.amount).toLocaleString()}
-          </div>
+          <h2 className="text-2xl font-bold text-rose-400">
 
-          <div className="text-xs text-gray-400">
+            {formatCurrency(
+              expense.amount,
+              currency
+            )}
+
+          </h2>
+
+          <p className="mt-1 text-xs text-slate-500">
             Expense
-          </div>
+          </p>
 
         </div>
 
       </div>
 
-      {/* Badges */}
-
-      <div className="flex flex-wrap gap-2 mt-6">
+      <div className="mt-6 flex flex-wrap gap-2">
 
         <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${config.color}`}
+          className={`rounded-full px-3 py-1 text-xs font-medium ${config.badge}`}
         >
           {expense.category}
         </span>
 
         {expense.paymentMethod && (
-          <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-slate-800 text-xs flex items-center gap-1">
+          <span className="flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">
+
             <CreditCard size={13} />
+
             {expense.paymentMethod}
+
           </span>
         )}
 
         {expense.account && (
-          <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-slate-800 text-xs flex items-center gap-1">
+          <span className="flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">
+
             <Landmark size={13} />
+
             {expense.account}
+
           </span>
         )}
 
       </div>
 
-      {/* Footer */}
+      <div className="mt-6 flex items-center justify-between border-t border-slate-700 pt-5">
 
-      <div className="flex justify-between items-center mt-6 pt-5 border-t border-gray-200 dark:border-slate-700">
-
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-slate-400">
 
           <CalendarDays size={16} />
 
@@ -157,21 +176,21 @@ const ExpenseCard = ({
 
           <button
             onClick={() => onSelect(expense)}
-            className="w-10 h-10 rounded-xl hover:bg-blue-100 dark:hover:bg-slate-800 flex items-center justify-center transition"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-300 transition hover:bg-cyan-500 hover:text-white"
           >
             <Eye size={18} />
           </button>
 
           <button
             onClick={() => onEdit(expense)}
-            className="w-10 h-10 rounded-xl hover:bg-yellow-100 dark:hover:bg-slate-800 flex items-center justify-center transition"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-300 transition hover:bg-amber-500 hover:text-white"
           >
             <Pencil size={18} />
           </button>
 
           <button
             onClick={() => onDelete(expense._id)}
-            className="w-10 h-10 rounded-xl hover:bg-red-100 dark:hover:bg-slate-800 flex items-center justify-center transition"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-300 transition hover:bg-red-500 hover:text-white"
           >
             <Trash2 size={18} />
           </button>
