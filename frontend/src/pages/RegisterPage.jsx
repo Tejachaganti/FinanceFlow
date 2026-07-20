@@ -9,16 +9,23 @@ const RegisterPage = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setSubmitting(true);
-    const success = await register(form);
-    setSubmitting(false);
+  event.preventDefault();
 
-    if (success) {
-      navigate("/app/dashboard");
-    }
-  };
+  console.log("Submit clicked");
+  console.log(form);
 
+  setSubmitting(true);
+
+  const success = await register(form);
+
+  console.log("Register result:", success);
+
+  setSubmitting(false);
+
+  if (success) {
+    navigate("/app/dashboard");
+  }
+};
   return (
     <div className="flex min-h-screen items-center justify-center bg-mesh p-4">
       <form onSubmit={handleSubmit} className="glass-card w-full max-w-md space-y-4 p-6">
