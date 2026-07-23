@@ -212,8 +212,7 @@ const LoginPage = () => {
                 )}
               </button>
 
-              <button type="button" onClick={() => toast("Google sign-in will appear when it is enabled for this workspace.", { icon: "ℹ️" })} className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-700 py-3 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white">Continue with Google</button>
-
+              
               {/* Divider */}
 
               <div className="my-8 flex items-center">
