@@ -32,9 +32,28 @@ const CategoryPieChart = ({
     (sum, item) => sum + item.value,
     0
   );
-
+if (!data.length) {
   return (
-    <section className="relative rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
+      <div className="flex h-[420px] flex-col items-center justify-center">
+        <PieChartIcon
+          size={60}
+          className="text-slate-600"
+        />
+
+        <h3 className="mt-6 text-xl font-semibold text-white">
+          No Category Data
+        </h3>
+
+        <p className="mt-2 text-slate-400">
+          Add expenses to see category-wise spending.
+        </p>
+      </div>
+    </section>
+  );
+}
+  return (
+    <section className="relative rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
 
       {/* Header */}
 
@@ -85,15 +104,17 @@ const CategoryPieChart = ({
           <PieChart>
 
             <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              innerRadius={80}
-              outerRadius={118}
-              paddingAngle={4}
-              cornerRadius={8}
-              animationDuration={900}
-            >
+  data={data}
+  dataKey="value"
+  nameKey="name"
+  innerRadius={80}
+  outerRadius={118}
+  paddingAngle={4}
+  cornerRadius={8}
+  isAnimationActive
+  animationDuration={1200}
+  animationEasing="ease-out"
+>
 
               {data.map((entry, index) => (
 
@@ -107,9 +128,10 @@ const CategoryPieChart = ({
             </Pie>
 
             <Tooltip
-              formatter={(value) =>
-                formatCurrency(value, currency)
-              }
+             formatter={(value, name) => [
+  formatCurrency(value, currency),
+  name,
+]}
               contentStyle={{
                 background: "#131A2A",
                 border: "1px solid #334155",
@@ -178,7 +200,7 @@ const CategoryPieChart = ({
 
         <div className="rounded-full bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-300">
 
-          Distribution
+           {data.length} Segment{data.length !== 1 ? "s" : ""}
 
         </div>
 

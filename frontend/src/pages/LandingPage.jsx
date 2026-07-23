@@ -3,6 +3,11 @@ import {
   Wallet,
   Menu,
   X,
+  Check,
+  ChevronDown,
+  ShieldCheck,
+  Sparkles,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,6 +16,7 @@ import { useState } from "react";
 const LandingPage = () => {
   const [mobileMenu, setMobileMenu] =
     useState(false);
+  const [openFaq, setOpenFaq] = useState(0);
 
   return (
     <div className="min-h-screen overflow-hidden bg-[#0B1120] text-white">
@@ -516,6 +522,7 @@ const LandingPage = () => {
         </motion.div>
 
       </section>
+      <section className="mx-auto max-w-7xl px-6 py-10"><p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Built for smarter personal finance</p><div className="mt-7 grid grid-cols-2 gap-3 text-center sm:grid-cols-4"><div className="rounded-2xl border border-slate-800 bg-slate-900/30 py-4 text-sm font-semibold text-slate-400">Bank-grade security</div><div className="rounded-2xl border border-slate-800 bg-slate-900/30 py-4 text-sm font-semibold text-slate-400">AI-powered insights</div><div className="rounded-2xl border border-slate-800 bg-slate-900/30 py-4 text-sm font-semibold text-slate-400">Beautiful analytics</div><div className="rounded-2xl border border-slate-800 bg-slate-900/30 py-4 text-sm font-semibold text-slate-400">Privacy-first design</div></div></section>
             {/* Features */}
 
       <section
@@ -768,6 +775,9 @@ const LandingPage = () => {
         </div>
 
       </section>
+      <section id="pricing" className="mx-auto max-w-7xl px-6 py-24"><div className="text-center"><span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300">Simple pricing</span><h2 className="mt-6 text-4xl font-bold sm:text-5xl">Start free. Grow with confidence.</h2><p className="mt-5 text-slate-400">Choose the plan that fits your financial journey.</p></div><div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">{[{ name: "Free", price: "₹0", description: "Everything you need to build better money habits.", items: ["Expense tracking", "Monthly budget", "Core analytics"] }, { name: "Pro", price: "Coming soon", description: "More intelligence for ambitious financial goals.", items: ["Advanced AI insights", "Premium reporting", "Priority support"], featured: true }].map((plan) => <motion.div whileHover={{ y: -6 }} key={plan.name} className={`rounded-3xl border p-7 ${plan.featured ? "border-cyan-400/50 bg-cyan-400/5 shadow-xl shadow-cyan-500/10" : "border-slate-700 bg-[#131A2A]"}`}><div className="flex items-center justify-between"><h3 className="text-2xl font-semibold">{plan.name}</h3>{plan.featured && <span className="rounded-full bg-cyan-400 px-3 py-1 text-xs font-bold text-slate-950">Future plan</span>}</div><p className="mt-4 text-3xl font-bold text-white">{plan.price}</p><p className="mt-3 min-h-12 text-sm leading-6 text-slate-400">{plan.description}</p><ul className="mt-6 space-y-3">{plan.items.map((item) => <li key={item} className="flex items-center gap-2 text-sm text-slate-300"><Check size={16} className="text-cyan-300" />{item}</li>)}</ul><Link to="/register" className="mt-8 block rounded-2xl bg-slate-900 py-3 text-center text-sm font-semibold transition hover:bg-cyan-400 hover:text-slate-950">{plan.featured ? "Join waitlist" : "Get started free"}</Link></motion.div>)}</div></section>
+      <section className="mx-auto max-w-7xl px-6 py-24"><div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]"><div><span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300">Loved by mindful spenders</span><h2 className="mt-7 text-4xl font-bold sm:text-5xl">Clarity feels good.</h2><p className="mt-5 max-w-md leading-7 text-slate-400">A calmer way to understand your money—without complicated spreadsheets.</p><div className="mt-8 flex items-center gap-2 text-amber-300">{[0, 1, 2, 3, 4].map((item) => <Star key={item} size={18} fill="currentColor" />)}<span className="ml-2 text-sm text-slate-400">Designed for everyday confidence</span></div></div><div className="grid gap-5 sm:grid-cols-2">{["The dashboard makes my spending habits obvious without being overwhelming.", "I finally have one place for budgets, expenses, and useful financial insights."].map((quote, index) => <motion.figure whileHover={{ y: -4 }} key={quote} className="rounded-3xl border border-slate-700 bg-[#131A2A] p-6"><Sparkles className="text-cyan-300" size={20} /><blockquote className="mt-5 text-lg leading-8 text-slate-200">“{quote}”</blockquote><figcaption className="mt-6 text-sm text-slate-500">FinanceFlow early user {index + 1}</figcaption></motion.figure>)}</div></div></section>
+      <section id="faq" className="mx-auto max-w-4xl px-6 py-24"><div className="text-center"><span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300">FAQ</span><h2 className="mt-6 text-4xl font-bold sm:text-5xl">Questions, answered.</h2></div><div className="mt-12 space-y-3">{[{ q: "Is FinanceFlow free to use?", a: "Yes. You can begin with the current core expense, budget, analytics, and AI experiences for free." }, { q: "Is my financial information secure?", a: "FinanceFlow uses authenticated sessions and keeps your account data separated by user access controls." }, { q: "Can I export my data?", a: "Yes. CSV and PDF exports are available from Analytics and Reports." }].map((item, index) => <div key={item.q} className="rounded-3xl border border-slate-700 bg-[#131A2A]"><button onClick={() => setOpenFaq(openFaq === index ? -1 : index)} className="flex w-full items-center justify-between gap-4 p-5 text-left font-semibold sm:p-6">{item.q}<ChevronDown size={19} className={`shrink-0 text-cyan-300 transition ${openFaq === index ? "rotate-180" : ""}`} /></button>{openFaq === index && <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="px-5 pb-5 leading-7 text-slate-400 sm:px-6 sm:pb-6">{item.a}</motion.p>}</div>)}</div></section>
             {/* Final CTA */}
 
       <section className="mx-auto max-w-7xl px-6 py-24">

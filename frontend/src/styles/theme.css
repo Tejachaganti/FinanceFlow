@@ -1,0 +1,94 @@
+/* ===========================================================
+   FinanceFlow Design System v2
+   =========================================================== */
+
+/* =========================
+   LIGHT THEME
+   ========================= */
+
+:root,
+:root.light {
+
+  /* Backgrounds */
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-3: #E2E8F0;
+
+  /* Borders */
+  --border: #E2E8F0;
+
+  /* Text */
+  --text: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+
+  /* Brand */
+  --primary: #06B6D4;
+  --primary-hover: #0891B2;
+  --secondary: #2563EB;
+
+  /* Status */
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  /* Charts */
+  --chart-income: #10B981;
+  --chart-expense: #EF4444;
+  --chart-budget: #06B6D4;
+  --chart-saving: #3B82F6;
+
+  /* Layout */
+  --radius: 24px;
+  --radius-sm: 16px;
+  --sidebar-width: 280px;
+
+  /* Shadow */
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* =========================
+   DARK THEME
+   ========================= */
+
+:root.dark {
+
+  /* Backgrounds */
+  --bg: #0B1120;
+  --surface: #131A2A;
+  --surface-2: #1E293B;
+  --surface-3: #273449;
+
+  /* Borders */
+  --border: #334155;
+
+  /* Text */
+  --text: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  /* Brand */
+  --primary: #06B6D4;
+  --primary-hover: #22D3EE;
+  --secondary: #3B82F6;
+
+  /* Status */
+  --success: #22C55E;
+  --warning: #FBBF24;
+  --danger: #F87171;
+
+  /* Charts */
+  --chart-income: #34D399;
+  --chart-expense: #FB7185;
+  --chart-budget: #22D3EE;
+  --chart-saving: #60A5FA;
+
+  /* Layout */
+  --radius: 24px;
+  --radius-sm: 16px;
+  --sidebar-width: 280px;
+
+  /* Shadow */
+  --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}

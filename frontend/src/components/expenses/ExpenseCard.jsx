@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 
 import { formatCurrency } from "../../utils/formatters";
+import { motion } from "framer-motion";
+import { memo } from "react";
 
 const categoryConfig = {
   Food: {
@@ -80,7 +82,7 @@ const ExpenseCard = ({
   const Icon = config.icon;
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10">
+    <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="group relative overflow-hidden rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 transition-all duration-300 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 sm:p-6">
 
       <div
         className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${config.color}`}
@@ -199,8 +201,8 @@ const ExpenseCard = ({
 
       </div>
 
-    </div>
+    </motion.article>
   );
 };
 
-export default ExpenseCard;
+export default memo(ExpenseCard);

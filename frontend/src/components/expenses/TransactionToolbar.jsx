@@ -4,6 +4,7 @@ import {
   RotateCcw,
   ArrowUpDown,
   Filter,
+  CalendarRange,
 } from "lucide-react";
 
 const categories = [
@@ -41,7 +42,7 @@ const TransactionToolbar = ({
   };
 
   return (
-    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6 shadow-lg">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-4 shadow-lg sm:p-6">
 
       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
 
@@ -93,6 +94,13 @@ const TransactionToolbar = ({
               ))}
             </select>
 
+          </div>
+
+          <div className="flex min-w-[210px] flex-1 items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 px-3 py-2.5 sm:flex-none">
+            <CalendarRange size={17} className="shrink-0 text-slate-400" />
+            <input aria-label="Start date" type="date" value={filters.startDate} onChange={(e) => updateFilter("startDate", e.target.value)} className="min-w-0 flex-1 bg-transparent text-xs text-slate-300 outline-none [color-scheme:dark]" />
+            <span className="text-slate-600">–</span>
+            <input aria-label="End date" type="date" value={filters.endDate} onChange={(e) => updateFilter("endDate", e.target.value)} className="min-w-0 flex-1 bg-transparent text-xs text-slate-300 outline-none [color-scheme:dark]" />
           </div>
 
           <div className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3">

@@ -18,8 +18,19 @@ const WeeklyBarChart = ({
   data = [],
   currency,
 }) => {
+  if (!data.length) {
+    return (
+      <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
+        <div className="flex h-[330px] flex-col items-center justify-center text-center">
+          <CalendarDays size={46} className="text-slate-600" />
+          <h3 className="mt-5 text-lg font-semibold text-white">No weekly activity yet</h3>
+          <p className="mt-2 max-w-xs text-sm leading-6 text-slate-400">Weekly spending will appear here once expenses are recorded.</p>
+        </div>
+      </section>
+    );
+  }
   return (
-    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
 
       {/* Header */}
 

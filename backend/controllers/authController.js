@@ -1,12 +1,21 @@
 import User from "../models/User.js";
 import Budget from "../models/Budget.js";
 import generateToken from "../utils/generateToken.js";
+import crypto from "crypto";
+import { sendPasswordResetEmail } from "../utils/email.js";
 
 export const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const name = typeof req.body.name === "string" ? req.body.name.trim() : "";
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    const password = typeof req.body.password === "string" ? req.body.password : "";
     if (!name || !email || !password) {
       const error = new Error("Name, email, and password are required.");
+      error.statusCode = 400;
+      throw error;
+    }
+    if (name.length > 100 || !/^\S+@\S+\.\S+$/.test(email) || password.length < 6 || password.length > 128) {
+      const error = new Error("Please provide valid registration details.");
       error.statusCode = 400;
       throw error;
     }
@@ -40,7 +49,13 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    const password = typeof req.body.password === "string" ? req.body.password : "";
+    if (!email || !password || password.length > 128) {
+      const error = new Error("Invalid credentials.");
+      error.statusCode = 401;
+      throw error;
+    }
     const user = await User.findOne({ email });
 
     if (!user || !(await user.matchPassword(password))) {
@@ -68,4 +83,45 @@ export const loginUser = async (req, res, next) => {
 
 export const getCurrentUser = async (req, res) => {
   res.json({ success: true, user: req.user });
+};
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    const response = { success: true, message: "If an account exists for that email, a reset link has been sent." };
+    if (!/^\S+@\S+\.\S+$/.test(email)) return res.json(response);
+    const user = await User.findOne({ email }).select("+resetPasswordToken +resetPasswordExpires");
+    if (!user) return res.json(response);
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+    user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+    await user.save({ validateBeforeSave: false });
+    const baseUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:5173";
+    try {
+      await sendPasswordResetEmail({ to: user.email, name: user.name, resetUrl: `${baseUrl.replace(/\/$/, "")}/reset-password/${rawToken}` });
+    } catch (error) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      throw error;
+    }
+    return res.json(response);
+  } catch (error) { next(error); }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const password = typeof req.body.password === "string" ? req.body.password : "";
+    if (password.length < 6 || password.length > 128 || !req.params.token) {
+      const error = new Error("This password reset link is invalid or has expired."); error.statusCode = 400; throw error;
+    }
+    const tokenHash = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const user = await User.findOne({ resetPasswordToken: tokenHash, resetPasswordExpires: { $gt: new Date() } }).select("+resetPasswordToken +resetPasswordExpires");
+    if (!user) { const error = new Error("This password reset link is invalid or has expired."); error.statusCode = 400; throw error; }
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    res.json({ success: true, message: "Password reset successfully. You can now sign in." });
+  } catch (error) { next(error); }
 };

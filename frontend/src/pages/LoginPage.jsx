@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Mail,
@@ -7,6 +10,7 @@ import {
   EyeOff,
   Wallet,
   ArrowRight,
+  LoaderCircle,
 } from "lucide-react";
 
 import useAuth from "../hooks/useAuth";
@@ -15,20 +19,16 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const { register: registerField, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: "", password: "" } });
 
   const [showPassword, setShowPassword] =
     useState(false);
 
   const [submitting, setSubmitting] =
     useState(false);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
+  const [rememberMe, setRememberMe] = useState(true);
+  const onSubmit = async (form) => {
+    if (submitting) return;
     setSubmitting(true);
 
     const success = await login(form);
@@ -59,7 +59,7 @@ const LoginPage = () => {
 
         <div className="flex w-full justify-center lg:w-1/2">
 
-          <div className="w-full max-w-md">
+          <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} className="w-full max-w-md">
 
             {/* Logo */}
 
@@ -106,8 +106,8 @@ const LoginPage = () => {
             {/* Card */}
 
             <form
-              onSubmit={handleSubmit}
-              className="rounded-3xl border border-slate-700 bg-[#131A2A] p-8 shadow-2xl"
+              onSubmit={handleSubmit(onSubmit)}
+              className="rounded-3xl border border-slate-700/70 bg-[#131A2A]/85 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl"
             >
 
               {/* Email */}
@@ -127,19 +127,12 @@ const LoginPage = () => {
 
                   <input
                     type="email"
-                    required
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
+                    {...registerField("email", { required: "Email is required.", pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email address." } })}
                     placeholder="john@example.com"
-                    className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    aria-invalid={Boolean(errors.email)} className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                   />
 
-                </div>
+                </div>{errors.email && <p className="mt-2 text-xs text-rose-300">{errors.email.message}</p>}
 
               </div>
 
@@ -164,17 +157,9 @@ const LoginPage = () => {
                         ? "text"
                         : "password"
                     }
-                    required
-                    value={form.password}
-                    onChange={(e) =>
-                      setForm((prev) => ({
-                        ...prev,
-                        password:
-                          e.target.value,
-                      }))
-                    }
+                    {...registerField("password", { required: "Password is required." })}
                     placeholder="••••••••"
-                    className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    aria-invalid={Boolean(errors.password)} className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-12 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                   />
 
                   <button
@@ -184,7 +169,7 @@ const LoginPage = () => {
                         !showPassword
                       )
                     }
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                    aria-label={showPassword ? "Hide password" : "Show password"} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg text-slate-500 transition hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
                   >
                     {showPassword ? (
                       <EyeOff size={18} />
@@ -193,19 +178,20 @@ const LoginPage = () => {
                     )}
                   </button>
 
-                </div>
+                </div>{errors.password && <p className="mt-2 text-xs text-rose-300">{errors.password.message}</p>}
 
               </div>
                             {/* Forgot Password */}
 
-              <div className="mt-3 flex justify-end">
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <label className="flex items-center gap-2 text-sm text-slate-400"><input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} className="h-4 w-4 rounded border-slate-600 bg-slate-900 accent-cyan-400" /> Remember me</label>
 
-                <button
+                <Link to="/forgot-password"
                   type="button"
-                  className="text-sm text-cyan-400 transition hover:text-cyan-300"
+                  onClick={() => toast("Password reset is not enabled on this FinanceFlow server yet.", { icon: "ℹ️" })} className="text-sm text-cyan-400 transition hover:text-cyan-300"
                 >
                   Forgot Password?
-                </button>
+                </Link>
 
               </div>
 
@@ -217,7 +203,7 @@ const LoginPage = () => {
                 className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold text-white shadow-xl shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cyan-500/40 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
-                  "Signing In..."
+                  <><LoaderCircle size={18} className="animate-spin" /> Signing in...</>
                 ) : (
                   <>
                     Sign In
@@ -225,6 +211,8 @@ const LoginPage = () => {
                   </>
                 )}
               </button>
+
+              <button type="button" onClick={() => toast("Google sign-in will appear when it is enabled for this workspace.", { icon: "ℹ️" })} className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-700 py-3 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white">Continue with Google</button>
 
               {/* Divider */}
 
@@ -251,7 +239,7 @@ const LoginPage = () => {
 
             </form>
 
-          </div>
+          </motion.div>
 
         </div>
 

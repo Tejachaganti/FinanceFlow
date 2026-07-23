@@ -12,19 +12,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const applyTheme = (theme) => {
-    const resolvedTheme = theme === "system" ? "dark" : theme;
-    document.body.classList.toggle("light", resolvedTheme === "light");
-    localStorage.setItem(THEME_KEY, resolvedTheme);
-  };
+  let resolvedTheme = theme;
 
+  if (theme === "system") {
+    resolvedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  document.documentElement.classList.remove("light", "dark");
+  document.documentElement.classList.add(resolvedTheme);
+
+  localStorage.setItem(THEME_KEY, theme);
+};
   const persistSession = async () => {
     const token = localStorage.getItem("financeflow_token");
-    const storedTheme = localStorage.getItem(THEME_KEY);
-
-    if (storedTheme) {
-      applyTheme(storedTheme);
-    }
-
+   const storedTheme = localStorage.getItem(THEME_KEY) || "dark";
+applyTheme(storedTheme);
     if (!token) {
       setLoading(false);
       return;
@@ -33,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await api.get("/auth/me");
       setUser(data.user);
-      applyTheme(data.user.theme || storedTheme || "dark");
+      applyTheme(data.user.theme || localStorage.getItem(THEME_KEY) || "dark");
     } catch (_error) {
       localStorage.removeItem("financeflow_token");
       setUser(null);
@@ -44,6 +48,15 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     persistSession();
+  }, []);
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null);
+      toast.error("Your session has expired. Please sign in again.");
+    };
+    window.addEventListener("financeflow:session-expired", handleSessionExpired);
+    return () => window.removeEventListener("financeflow:session-expired", handleSessionExpired);
   }, []);
 
   const login = async (values) => {
@@ -76,6 +89,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("financeflow_token");
+    localStorage.removeItem("financeflow_recent_searches");
     setUser(null);
     toast.success("Signed out");
   };

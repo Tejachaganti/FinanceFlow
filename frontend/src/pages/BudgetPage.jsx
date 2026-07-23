@@ -1,388 +1,43 @@
-import { useEffect, useState } from "react";
-import SectionHeading from "../components/common/SectionHeading";
+import { useEffect, useMemo, useState } from "react";
+import { AlertTriangle, BarChart3, CircleDollarSign, Landmark, PiggyBank, PlusCircle, SlidersHorizontal, Target, TrendingUp, Wallet } from "lucide-react";
+import { motion } from "framer-motion";
+import CountUp from "react-countup";
 import BudgetProgress from "../components/settings/BudgetProgress";
+import BudgetVsActualChart from "../components/charts/BudgetVsActualChart";
 import useFinance from "../hooks/useFinance";
 import { formatCurrency } from "../utils/formatters";
 
-const initialIncomeForm = {
-  source: "Salary",
-  amount: "",
-  date: new Date().toISOString().slice(0, 10),
-  notes: ""
-};
+const initialIncomeForm = { source: "Salary", amount: "", date: new Date().toISOString().slice(0, 10), notes: "" };
+const CardSkeleton = () => <div className="h-36 animate-pulse rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5"><div className="h-4 w-24 rounded bg-slate-700" /><div className="mt-5 h-8 w-32 rounded bg-slate-700" /></div>;
+const Field = ({ label, children }) => <label className="block"><span className="mb-2 block text-sm font-medium text-slate-300">{label}</span>{children}</label>;
+const inputClass = "w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/15 [color-scheme:dark]";
 
 const BudgetPage = () => {
-  const { budget, snapshot, income, saveBudget, createIncome } = useFinance();
+  const { budget, snapshot, income, analytics, loading, saveBudget, createIncome } = useFinance();
   const [form, setForm] = useState({ monthlyBudget: 0, alertThresholdPercent: 80 });
   const [incomeForm, setIncomeForm] = useState(initialIncomeForm);
-
-  useEffect(() => {
-    setForm({
-      monthlyBudget: budget?.monthlyBudget || 0,
-      alertThresholdPercent: budget?.alertThresholdPercent || 80
-    });
-  }, [budget]);
-
-  const handleBudgetSubmit = async (event) => {
-    event.preventDefault();
-    await saveBudget({
-      monthlyBudget: Number(form.monthlyBudget),
-      alertThresholdPercent: Number(form.alertThresholdPercent)
-    });
-  };
-
-  const handleIncomeSubmit = async (event) => {
-    event.preventDefault();
-    const success = await createIncome({
-      ...incomeForm,
-      amount: Number(incomeForm.amount)
-    });
-
-    if (success) {
-      setIncomeForm(initialIncomeForm);
-    }
-  };
-
-  return (
-  <div className="min-h-screen bg-[#0B1120]">
-    <div className="mx-auto max-w-7xl space-y-8 p-6 lg:p-8">
-
-      {/* Hero */}
-
-      <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
-
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-
-          <div>
-
-            <p className="text-sm font-medium uppercase tracking-[0.25em] text-cyan-400">
-              Budget Planner
-            </p>
-
-            <h1 className="mt-3 text-4xl font-bold text-white">
-              Manage Your Budget
-            </h1>
-
-            <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-400">
-              Set monthly spending limits, monitor savings,
-              track income, and stay financially healthy.
-            </p>
-
-          </div>
-
-          <div className="rounded-3xl bg-gradient-to-br from-cyan-500 to-blue-600 px-8 py-6 shadow-xl shadow-cyan-500/20">
-
-            <p className="text-sm text-cyan-100">
-              Current Savings Rate
-            </p>
-
-            <h2 className="mt-2 text-5xl font-bold text-white">
-              {snapshot?.savingsRate || 0}%
-            </h2>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* Summary */}
-
-      <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-
-        <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6">
-          <p className="text-sm text-slate-400">Monthly Budget</p>
-          <h2 className="mt-3 text-3xl font-bold text-white">
-            {formatCurrency(budget?.monthlyBudget || 0)}
-          </h2>
-        </div>
-
-        <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6">
-          <p className="text-sm text-slate-400">Total Expenses</p>
-          <h2 className="mt-3 text-3xl font-bold text-red-400">
-            {formatCurrency(snapshot?.expenses || 0)}
-          </h2>
-        </div>
-
-        <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6">
-          <p className="text-sm text-slate-400">Remaining Budget</p>
-          <h2 className="mt-3 text-3xl font-bold text-green-400">
-            {formatCurrency(
-              Math.max(
-                (budget?.monthlyBudget || 0) -
-                  (snapshot?.expenses || 0),
-                0
-              )
-            )}
-          </h2>
-        </div>
-
-        <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-6">
-          <p className="text-sm text-slate-400">
-            Alert Threshold
-          </p>
-
-          <h2 className="mt-3 text-3xl font-bold text-cyan-400">
-            {budget?.alertThresholdPercent || 80}%
-          </h2>
-
-        </div>
-
-      </section>
-
-      {/* Budget Planner */}
-
-      <section className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
-
-        <form
-          onSubmit={handleBudgetSubmit}
-          className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8"
-        >
-
-          <h2 className="text-2xl font-bold text-white">
-            Monthly Budget Plan
-          </h2>
-
-          <p className="mt-2 text-slate-400">
-            Configure your monthly spending limit.
-          </p>
-
-          <div className="mt-8 space-y-6">
-
-            <div>
-
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Monthly Budget
-              </label>
-
-              <input
-                className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-                type="number"
-                value={form.monthlyBudget}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    monthlyBudget: e.target.value,
-                  }))
-                }
-              />
-
-            </div>
-
-            <div>
-
-              <label className="mb-2 block text-sm font-medium text-slate-300">
-                Alert Threshold (%)
-              </label>
-
-              <input
-                className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-                type="number"
-                value={form.alertThresholdPercent}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    alertThresholdPercent:
-                      e.target.value,
-                  }))
-                }
-              />
-
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold text-white transition hover:-translate-y-1"
-            >
-              Save Budget
-            </button>
-
-          </div>
-
-        </form>
-
-        <BudgetProgress snapshot={snapshot} />
-
-      </section>
-
-      {/* Income */}
-
-      <section className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
-
-        <form
-          onSubmit={handleIncomeSubmit}
-          className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8"
-        >
-
-          <div className="mb-8">
-
-            <h2 className="text-2xl font-bold text-white">
-              Income Tracking
-            </h2>
-
-            <p className="mt-2 text-slate-400">
-              Record every income source and monitor your earnings.
-            </p>
-
-          </div>
-
-          <div className="space-y-6">
-
-            <input
-              className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-              value={incomeForm.source}
-              onChange={(e) =>
-                setIncomeForm((prev) => ({
-                  ...prev,
-                  source: e.target.value,
-                }))
-              }
-              placeholder="Salary"
-            />
-
-            <input
-              className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-              type="number"
-              value={incomeForm.amount}
-              onChange={(e) =>
-                setIncomeForm((prev) => ({
-                  ...prev,
-                  amount: e.target.value,
-                }))
-              }
-              placeholder="Amount"
-            />
-
-            <input
-              className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-              type="date"
-              value={incomeForm.date}
-              onChange={(e) =>
-                setIncomeForm((prev) => ({
-                  ...prev,
-                  date: e.target.value,
-                }))
-              }
-            />
-
-            <textarea
-              rows={4}
-              className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-white outline-none focus:border-cyan-500"
-              value={incomeForm.notes}
-              onChange={(e) =>
-                setIncomeForm((prev) => ({
-                  ...prev,
-                  notes: e.target.value,
-                }))
-              }
-              placeholder="Optional notes..."
-            />
-
-            <button
-              type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/20"
-            >
-              Add Income
-            </button>
-
-          </div>
-
-        </form>
-
-        <div className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
-
-          <div className="mb-8 flex items-center justify-between">
-
-            <div>
-
-              <h2 className="text-2xl font-bold text-white">
-                Income History
-              </h2>
-
-              <p className="mt-2 text-slate-400">
-                {income?.length || 0} income records
-              </p>
-
-            </div>
-
-            <div className="rounded-2xl bg-cyan-500/10 px-4 py-2 text-cyan-300">
-              Total Income
-            </div>
-
-          </div>
-
-          {income?.length ? (
-
-            <div className="space-y-4">
-
-              {income.map((item) => (
-
-                <div
-                  key={item._id}
-                  className="rounded-3xl border border-slate-700 bg-slate-900/60 p-5 transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
-                >
-
-                  <div className="flex items-start justify-between">
-
-                    <div>
-
-                      <h3 className="text-lg font-semibold text-white">
-                        {item.source}
-                      </h3>
-
-                      <p className="mt-2 text-sm text-slate-400">
-                        {new Date(item.date).toLocaleDateString()}
-                      </p>
-
-                    </div>
-
-                    <h3 className="text-2xl font-bold text-green-400">
-                      +{formatCurrency(item.amount)}
-                    </h3>
-
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-slate-800/50 p-4">
-
-                    <p className="text-sm text-slate-400">
-                      {item.notes || "No notes added."}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              ))}
-
-            </div>
-
-          ) : (
-
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-700 py-20 text-center">
-
-              <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-3xl">
-                💰
-              </div>
-
-              <h3 className="text-2xl font-semibold text-white">
-                No Income Added
-              </h3>
-
-              <p className="mt-3 max-w-md text-slate-400">
-                Add your salary or other income sources to monitor your financial growth and savings.
-              </p>
-
-            </div>
-
-          )}
-
-        </div>
-
-      </section>
-
-    </div>
-  </div>
-);
+  useEffect(() => setForm({ monthlyBudget: budget?.monthlyBudget || 0, alertThresholdPercent: budget?.alertThresholdPercent || 80 }), [budget]);
+  const monthlyBudget = Number(snapshot?.monthlyBudget ?? budget?.monthlyBudget ?? 0);
+  const spent = Number(snapshot?.spent ?? snapshot?.expenses ?? 0);
+  const remaining = Number(snapshot?.remaining ?? monthlyBudget - spent);
+  const usedPercent = monthlyBudget ? (spent / monthlyBudget) * 100 : 0;
+  const categoryData = useMemo(() => [...(analytics?.categoryData || [])].sort((a, b) => b.value - a.value).slice(0, 4), [analytics]);
+  const handleBudgetSubmit = async (event) => { event.preventDefault(); await saveBudget({ monthlyBudget: Number(form.monthlyBudget), alertThresholdPercent: Number(form.alertThresholdPercent) }); };
+  const handleIncomeSubmit = async (event) => { event.preventDefault(); const success = await createIncome({ ...incomeForm, amount: Number(incomeForm.amount) }); if (success) setIncomeForm(initialIncomeForm); };
+  const summary = [
+    { title: "Monthly budget", value: monthlyBudget, icon: Target, tone: "text-cyan-300", surface: "bg-cyan-400/10", caption: "Your monthly spending limit" },
+    { title: "Spent this month", value: spent, icon: CircleDollarSign, tone: "text-rose-300", surface: "bg-rose-400/10", caption: `${Math.min(usedPercent, 100).toFixed(0)}% utilized` },
+    { title: remaining >= 0 ? "Remaining" : "Over budget", value: Math.abs(remaining), icon: Wallet, tone: remaining >= 0 ? "text-emerald-300" : "text-rose-300", surface: remaining >= 0 ? "bg-emerald-400/10" : "bg-rose-400/10", caption: remaining >= 0 ? "Available to spend" : "Above your limit" },
+    { title: "Monthly savings", value: Number(snapshot?.savings || 0), icon: PiggyBank, tone: "text-violet-300", surface: "bg-violet-400/10", caption: "Income less spending" },
+  ];
+  return <main className="min-h-screen bg-[#0B1120] text-white"><div className="mx-auto max-w-7xl space-y-6 px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+    <motion.header initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 shadow-2xl shadow-black/10 sm:p-8"><div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" /><div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Budget planner</p><h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Give every rupee a purpose</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base">Set spending boundaries, follow your monthly progress, and make room for your goals.</p></div><div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 px-6 py-4"><p className="text-xs font-medium text-cyan-100">Savings rate</p><p className="mt-1 text-3xl font-bold text-white"><CountUp end={Number(snapshot?.savingsRate || 0)} decimals={1} />%</p></div></div></motion.header>
+    {loading ? <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">{[0, 1, 2, 3].map((item) => <CardSkeleton key={item} />)}</div> : <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">{summary.map((item, index) => { const Icon = item.icon; return <motion.article key={item.title} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} whileHover={{ y: -4 }} className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 transition hover:shadow-lg hover:shadow-cyan-950/20"><div className="flex justify-between gap-3"><div><p className="text-sm text-slate-400">{item.title}</p><p className="mt-3 text-2xl font-bold tracking-tight text-white"><CountUp end={item.value} formattingFn={formatCurrency} duration={1.2} /></p></div><span className={`grid h-11 w-11 place-items-center rounded-2xl ${item.surface}`}><Icon size={21} className={item.tone} /></span></div><p className="mt-4 text-xs text-slate-500">{item.caption}</p></motion.article>; })}</section>}
+    {monthlyBudget > 0 && usedPercent >= Number(budget?.alertThresholdPercent || 80) && <section role="alert" className="flex gap-3 rounded-3xl border border-amber-400/25 bg-amber-400/10 p-4 text-sm text-amber-100"><AlertTriangle className="mt-0.5 shrink-0 text-amber-300" size={19} /><div><strong>{usedPercent >= 100 ? "You are over budget." : "You are nearing your budget limit."}</strong><p className="mt-1 text-amber-100/70">You have used {usedPercent.toFixed(0)}% of this month’s budget. Review discretionary spending before adding more expenses.</p></div></section>}
+    <section className="grid grid-cols-1 gap-6 xl:grid-cols-5"><section className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 sm:p-7 xl:col-span-2"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-cyan-400/10 text-cyan-300"><SlidersHorizontal size={20} /></span><div><h2 className="font-bold text-white">Budget controls</h2><p className="text-sm text-slate-400">Update your monthly guardrails.</p></div></div><form onSubmit={handleBudgetSubmit} className="mt-7 space-y-5"><Field label="Monthly budget"><input className={inputClass} type="number" min="0" value={form.monthlyBudget} onChange={(event) => setForm((previous) => ({ ...previous, monthlyBudget: event.target.value }))} /></Field><Field label="Alert threshold (%)"><input className={inputClass} type="number" min="0" max="100" value={form.alertThresholdPercent} onChange={(event) => setForm((previous) => ({ ...previous, alertThresholdPercent: event.target.value }))} /></Field><button className="w-full rounded-2xl bg-cyan-400 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">Save budget</button></form></section><section className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 sm:p-7 xl:col-span-3"><div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-300">Monthly overview</p><h2 className="mt-1 text-xl font-bold">Your budget progress</h2></div><div className="relative grid h-28 w-28 place-items-center rounded-full" style={{ background: `conic-gradient(${usedPercent >= 100 ? "#fb7185" : usedPercent >= 80 ? "#fbbf24" : "#22d3ee"} ${Math.min(usedPercent, 100) * 3.6}deg, #1e293b 0deg)` }}><div className="grid h-20 w-20 place-items-center rounded-full bg-[#131A2A] text-center"><span className="text-xl font-bold">{usedPercent.toFixed(0)}%</span><span className="text-[10px] text-slate-500">used</span></div></div></div><div className="mt-7"><BudgetProgress snapshot={{ ...snapshot, budgetUsedPercent: usedPercent }} /></div><div className="mt-6 rounded-2xl bg-slate-900/55 p-4 text-sm text-slate-400"><TrendingUp size={17} className="mr-2 inline text-cyan-300" />{remaining >= 0 ? `You have ${formatCurrency(remaining)} left to allocate this month.` : `You are ${formatCurrency(Math.abs(remaining))} over your set budget.`}</div></section></section>
+    <section className="grid grid-cols-1 gap-6 xl:grid-cols-5"><div className="xl:col-span-3"><BudgetVsActualChart data={[{ label: "This month", budget: monthlyBudget, actual: spent }]} /></div><section className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 sm:p-7 xl:col-span-2"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-violet-400/10 text-violet-300"><BarChart3 size={20} /></span><div><h2 className="font-bold">Category spending</h2><p className="text-sm text-slate-400">Your highest expense categories.</p></div></div><div className="mt-6 space-y-4">{categoryData.length ? categoryData.map((category) => { const share = spent ? Math.min((Number(category.value) / spent) * 100, 100) : 0; return <div key={category.name}><div className="flex justify-between gap-3 text-sm"><span className="truncate text-slate-200">{category.name}</span><span className="font-semibold">{formatCurrency(category.value)}</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full bg-gradient-to-r from-violet-400 to-cyan-400" style={{ width: `${share}%` }} /></div></div>; }) : <div className="rounded-2xl border border-dashed border-slate-700 px-5 py-10 text-center text-sm text-slate-500">Add expenses to see category-wise budget context.</div>}</div><div className="mt-6 rounded-2xl bg-emerald-400/5 p-4 text-sm leading-6 text-slate-400"><PiggyBank size={17} className="mr-2 inline text-emerald-300" />{remaining > 0 ? "Keep the remaining amount for savings or a planned expense." : "Set a budget above your essential monthly spending to create savings room."}</div></section></section>
+    <section className="grid grid-cols-1 gap-6 xl:grid-cols-2"><form onSubmit={handleIncomeSubmit} className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 sm:p-7"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-400/10 text-emerald-300"><PlusCircle size={20} /></span><div><h2 className="font-bold">Add income</h2><p className="text-sm text-slate-400">Keep your monthly picture accurate.</p></div></div><div className="mt-6 grid gap-4 sm:grid-cols-2"><Field label="Source"><input className={inputClass} value={incomeForm.source} onChange={(event) => setIncomeForm((previous) => ({ ...previous, source: event.target.value }))} /></Field><Field label="Amount"><input className={inputClass} type="number" min="0" value={incomeForm.amount} onChange={(event) => setIncomeForm((previous) => ({ ...previous, amount: event.target.value }))} /></Field><Field label="Date"><input className={inputClass} type="date" value={incomeForm.date} onChange={(event) => setIncomeForm((previous) => ({ ...previous, date: event.target.value }))} /></Field><Field label="Notes"><input className={inputClass} value={incomeForm.notes} onChange={(event) => setIncomeForm((previous) => ({ ...previous, notes: event.target.value }))} placeholder="Optional note" /></Field></div><button className="mt-5 w-full rounded-2xl bg-cyan-400 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300">Add income</button></form><section className="rounded-3xl border border-slate-700/50 bg-[#131A2A] p-5 sm:p-7"><div className="flex items-center justify-between"><div><h2 className="font-bold">Income history</h2><p className="mt-1 text-sm text-slate-400">{income?.length || 0} recorded income entries</p></div><Landmark className="text-cyan-300" size={21} /></div>{income?.length ? <div className="mt-6 max-h-72 space-y-3 overflow-y-auto pr-1">{income.map((item) => <div key={item._id} className="rounded-2xl bg-slate-900/55 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-medium text-slate-100">{item.source}</p><p className="mt-1 text-xs text-slate-500">{new Date(item.date).toLocaleDateString()}</p></div><p className="font-semibold text-emerald-300">+{formatCurrency(item.amount)}</p></div>{item.notes && <p className="mt-3 text-sm text-slate-400">{item.notes}</p>}</div>)}</div> : <div className="mt-6 rounded-2xl border border-dashed border-slate-700 py-12 text-center text-sm text-slate-500">No income recorded yet. Add one to track your savings.</div>}</section></section>
+  </div></main>;
 };
 
 export default BudgetPage;

@@ -1,0 +1,5 @@
+import { Link } from "react-router-dom";
+import { ArrowLeft, Compass, Wallet } from "lucide-react";
+
+const NotFoundPage = () => <main className="grid min-h-screen place-items-center bg-[#0B1120] p-6 text-white"><section className="w-full max-w-lg rounded-3xl border border-slate-700 bg-[#131A2A] p-8 text-center shadow-2xl"><span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-cyan-400/10 text-cyan-300"><Compass size={26} /></span><p className="mt-6 text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">404</p><h1 className="mt-2 text-3xl font-bold">This page isn’t here</h1><p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-slate-400">The link may be outdated, or the page may have moved. Let’s get you back to your finances.</p><Link to="/" className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950"><ArrowLeft size={16} /> Back to FinanceFlow</Link></section></main>;
+export default NotFoundPage;

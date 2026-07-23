@@ -12,4 +12,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const isAuthRequest = error.config?.url?.includes("/auth/login") || error.config?.url?.includes("/auth/register");
+    if (error.response?.status === 401 && !isAuthRequest) {
+      localStorage.removeItem("financeflow_token");
+      window.dispatchEvent(new Event("financeflow:session-expired"));
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

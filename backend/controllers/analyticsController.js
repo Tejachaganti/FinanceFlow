@@ -10,8 +10,6 @@ const formatCurrency = (value) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Number(value || 0));
 
 export const getAnalytics = async (req, res, next) => {
-    console.log("=== NEW ANALYTICS CONTROLLER RUNNING ===");
-
   try {
     const expenses = await Expense.find({ user: req.user._id }).sort({ date: 1 }).lean();
     const incomes = await Income.find({ user: req.user._id }).sort({ date: 1 }).lean();
@@ -46,7 +44,6 @@ export const getAnalytics = async (req, res, next) => {
     const currentMonthLabel = new Date().toLocaleString("en-US", { month: "short" });
     const currentMonthActual =
   monthlyExpenses.find((item) => item.month === currentMonthLabel)?.amount || 0;
-  console.log("monthlyExpenses sent:", monthlyExpenses);
     res.json({
       success: true,
       analytics: {

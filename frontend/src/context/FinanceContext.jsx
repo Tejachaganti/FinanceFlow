@@ -134,11 +134,86 @@ export const FinanceProvider = ({ children }) => {
       return false;
     }
   };
-
-  const value = useMemo(
-    () => ({ expenses, budget, analytics, insights, income, snapshot, loading, fetchFinanceData, createExpense, updateExpense, deleteExpense, saveBudget, createIncome, exportReport }),
-    [expenses, budget, analytics, insights, income, snapshot, loading]
+  const dashboard = useMemo(() => {
+  const totalIncome = income.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
   );
 
+  const totalExpenses = expenses.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  );
+
+  const balance = totalIncome - totalExpenses;
+
+  const savingsRate =
+    totalIncome > 0
+      ? Number(((balance / totalIncome) * 100).toFixed(1))
+      : 0;
+
+ const monthlyBudget =
+  budget?.monthlyBudget ??
+  snapshot?.monthlyBudget ??
+  0;
+
+  const currentPeriodExpenses = snapshot?.spent ?? totalExpenses;
+  const remainingBudget = monthlyBudget - currentPeriodExpenses;
+
+  const financialHealth =
+    totalIncome === 0
+      ? 45
+      : Math.min(
+          100,
+          Math.max(
+            0,
+            Math.round((balance / totalIncome) * 100)
+          )
+        );
+
+ return {
+  totalIncome,
+  totalExpenses,
+  currentPeriodExpenses,
+  balance,
+  savingsRate,
+  monthlyBudget,
+  remainingBudget,
+  financialHealth,
+};
+}, [income, expenses, budget, snapshot]);
+  const value = useMemo(
+  () => ({
+    expenses,
+    budget,
+    analytics,
+    insights,
+    income,
+    snapshot,
+    dashboard,
+    loading,
+
+    fetchFinanceData,
+    createExpense,
+    updateExpense,
+    deleteExpense,
+    saveBudget,
+    createIncome,
+    exportReport,
+
+    // Optional
+    setIncome,
+  }),
+  [
+    expenses,
+    budget,
+    analytics,
+    insights,
+    income,
+    snapshot,
+    dashboard,
+    loading,
+  ]
+);
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>;
 };

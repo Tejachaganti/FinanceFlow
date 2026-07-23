@@ -1,229 +1,84 @@
-# 💰 FinanceFlow
+# FinanceFlow
 
-FinanceFlow is a full-stack personal finance management platform designed to help users track expenses, manage budgets, analyze spending habits, and gain financial insights through interactive dashboards.
+FinanceFlow is a full-stack personal finance platform for tracking expenses, managing budgets, exploring analytics, generating reports, and receiving AI-assisted financial guidance.
 
-## 🌐 Live Demo
+## Highlights
 
-🔗 Frontend: https://financeflow-mauve.vercel.app
+- JWT-authenticated accounts with password recovery via expiring, single-use email links
+- Expense CRUD with attachments, filtering, voice-assisted entry, and category insights
+- Monthly budget planning, income tracking, savings visibility, and budget alerts
+- Analytics, reports, CSV/PDF exports, notifications, global search, and an AI assistant
+- Responsive React UI for desktop and mobile, with a Capacitor Android project
 
-🔗 Backend API: https://financeflow-backend-l0vt.onrender.com
+## Tech stack
 
----
+| Layer | Technology |
+| --- | --- |
+| Frontend | React, Vite, Tailwind CSS, React Router, Framer Motion, Recharts |
+| Backend | Node.js, Express, Mongoose, JWT, bcrypt, Nodemailer |
+| Data | MongoDB Atlas |
+| AI | Google GenAI (server-side only) |
+| Deployment | Vercel, Render, MongoDB Atlas |
 
+## Architecture
 
-## 📸 Screenshots
+`frontend` is a Vite SPA using an authenticated Axios client and route-level code splitting. `backend` exposes protected REST endpoints for finance, profile, analytics, AI, notifications, and password recovery. MongoDB stores user-scoped records.
 
-### Landing Page
-
-![Landing Page](screenshots/landing-page.png)
-
-### Login Page
-
-![Login Page](screenshots/login-page.png)
-
-### Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
-### Expense Management
-
-![Expense Management](screenshots/expenses-page.png)
-
-### Analytics & Reports
-
-![Analytics](screenshots/analytics-page.png)
-
-### Budget Management
-
-![Budget](screenshots/budget-page.png)
-
----
-
-## 🚀 Features
-
-### 🔐 Authentication & Security
-
-* JWT Authentication
-* Protected Routes
-* Secure Password Encryption
-* User Authorization
-
-### 💵 Expense Management
-
-* Add, Edit, Delete Expenses
-* Expense Categorization
-* Expense History Tracking
-* Smart Filtering & Search
-
-### 📊 Budget Management
-
-* Budget Planning
-* Spending Monitoring
-* Budget Performance Tracking
-* Monthly Budget Analysis
-
-### 📈 Financial Analytics
-
-* Expense Insights
-* Spending Trends
-* Category-wise Analysis
-* Interactive Charts & Dashboards
-
-### 👤 Profile Management
-
-* User Profile Settings
-* Personal Finance Preferences
-* Account Management
-
-### 📱 Mobile App Support
-
-* Capacitor Integration
-* Android Studio Project
-* Mobile-ready Architecture
-* Android APK Generation Support
-
-### ☁️ Cloud Deployment
-
-* Frontend deployed on Vercel
-* Backend deployed on Render
-* MongoDB Atlas Database
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* Recharts
-* Framer Motion
-* Axios
-
-### Backend
-
-* Node.js
-* Express.js
-* MongoDB Atlas
-* Mongoose
-* JWT Authentication
-* bcrypt.js
-
-### Mobile
-
-* Capacitor
-* Android Studio
-
-### Deployment
-
-* Vercel
-* Render
-* MongoDB Atlas
-
----
-
-## 📂 Project Structure
+## Local development
 
 ```bash
-FinanceFlow
-│
-├── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   └── server.js
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── android/
-│   └── package.json
-│
-├── app.js
-├── index.html
-├── style.css
-├── run-app.bat
-└── README.md
+git clone <your-repository-url>
+cd financeflow
+cd backend && npm install
+cd ../frontend && npm install
 ```
 
----
-
-## ⚙️ Local Setup
-
-### Clone Repository
-
-```bash
-git clone https://github.com/Tejachaganti/financeflow-backend.git
-```
-
-### Backend
-
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Quick Launch
-
-```bash
-run-app.bat
-```
-
----
-
-## 🔑 Environment Variables
-
-### Backend (.env)
+Create `backend/.env`:
 
 ```env
 PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLIENT_URL=http://localhost:5173
+MONGODB_URI=mongodb+srv://...
+JWT_SECRET=use_a_long_random_secret
+GEMINI_API_KEY=...
+FRONTEND_URL=http://localhost:5173
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=...
+SMTP_PASS=...
+EMAIL_FROM="FinanceFlow <no-reply@example.com>"
 ```
 
-### Frontend (.env)
+Create `frontend/.env`:
 
 ```env
-VITE_API_URL=https://financeflow-backend-l0vt.onrender.com/api
+VITE_API_URL=http://localhost:5000/api
 ```
 
----
+Start each service:
 
-## 📌 Future Enhancements
+```bash
+cd backend && npm run dev
+cd frontend && npm run dev
+```
 
-* AI-powered Financial Insights
-* Savings Goal Tracking
-* Investment Tracking
-* Recurring Expense Predictions
-* Financial Health Score
-* Smart Budget Recommendations
+## Deployment
 
----
+Deploy the frontend to Vercel with `VITE_API_URL` set to the public backend `/api` URL. Deploy `backend` to Render with the environment variables above, set `FRONTEND_URL` to the Vercel URL, configure MongoDB Atlas network access, and provide valid SMTP credentials for password-reset emails.
 
-## 👨‍💻 Author
+Before production, configure a strict CORS allowlist, use a strong JWT secret, and verify SMTP sender/domain settings.
 
-**Chaganti Naga Veera Satya Teja**
+## Screenshots
 
-GitHub: https://github.com/Tejachaganti
+Add screenshots under `screenshots/` for Landing, Dashboard, Expenses, Analytics, Budget, Reports, and AI Assistant.
 
-Portfolio: https://tejachaganti.github.io/portfolio/
+## Future enhancements
 
-LinkedIn: https://www.linkedin.com/in/chaganti-naga-veera-satya-teja-74b3b7327
+- HttpOnly-cookie session migration
+- Automated unit, API, and browser E2E tests
+- Excel export endpoint and scheduled reports
+- Investment and recurring-expense tracking
 
----
+## License
 
-⭐ Built as a Full-Stack Personal Finance Management Platform using React, Node.js, Express.js, MongoDB Atlas, JWT Authentication, Vercel, Render, and Android Studio.
+MIT

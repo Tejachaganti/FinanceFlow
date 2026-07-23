@@ -19,8 +19,28 @@ const MonthlyLineChart = ({
   data = [],
   currency,
 }) => {
+  if (!data.length) {
   return (
-    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
+      <div className="flex h-[420px] flex-col items-center justify-center">
+        <TrendingUp
+          size={60}
+          className="text-slate-600"
+        />
+
+        <h3 className="mt-6 text-xl font-semibold text-white">
+          No Expense Data
+        </h3>
+
+        <p className="mt-2 text-slate-400">
+          Add some expenses to view monthly spending trends.
+        </p>
+      </div>
+    </section>
+  );
+}
+  return (
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-8">
 
       {/* Header */}
 
@@ -147,12 +167,16 @@ const MonthlyLineChart = ({
               borderRadius: 18,
               color: "#fff",
             }}
-            formatter={(value) =>
-              formatCurrency(value, currency)
-            }
+            formatter={(value) => [
+  formatCurrency(value, currency),
+  "Expenses",
+]}
           />
 
           <Area
+  isAnimationActive
+  animationDuration={1200}
+  animationEasing="ease-out"
             type="monotone"
             dataKey="amount"
             stroke="#06B6D4"
@@ -191,10 +215,8 @@ const MonthlyLineChart = ({
         </div>
 
         <div className="rounded-full bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-300">
-
-          Live Data
-
-        </div>
+  {data.length} Month{data.length !== 1 ? "s" : ""}
+</div>
 
       </div>
 

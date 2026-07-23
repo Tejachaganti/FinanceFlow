@@ -8,7 +8,7 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import { formatCurrency } from "../../utils/formatters";
-
+import CountUp from "react-countup";
 const config = {
   blue: {
     icon: Wallet,
@@ -99,12 +99,25 @@ const StatsCards = ({ cards, currency }) => {
               </p>
 
               <h2 className="mt-3 text-3xl font-bold text-white">
-
-                {card.isPercentage
-                  ? `${card.value}%`
-                  : formatCurrency(card.value, currency)}
-
-              </h2>
+  {card.isPercentage ? (
+    <>
+     <CountUp
+  end={card.value ?? 0}
+  duration={1.5}
+  decimals={1}
+/>
+      %
+    </>
+  ) : (
+    <CountUp
+  end={card.value ?? 0}
+  duration={1.5}
+  formattingFn={(value) =>
+    formatCurrency(value, currency)
+  }
+/>
+  )}
+</h2>
 
               <p className="mt-2 text-sm text-slate-500">
                 {card.caption}
@@ -118,11 +131,14 @@ const StatsCards = ({ cards, currency }) => {
 
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: "75%" }}
-                transition={{
-                  delay: index * 0.1,
-                  duration: 0.8,
-                }}
+                animate={{
+  width: `${Math.max(0, Math.min(card.progress ?? 75, 100))}%`,
+}}
+               transition={{
+  delay: index * 0.1,
+  duration: 0.8,
+  ease: "easeOut",
+}}
                 className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
               />
 

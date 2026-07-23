@@ -13,6 +13,8 @@ import budgetRoutes from "./routes/budgetRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
+import aiRoutes from "./routes/ai.routes.js";
+import notificationRoutes from "./routes/notifications.routes.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -42,6 +44,9 @@ app.use("/api/expenses", expenseRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/notifications", notificationRoutes);
+console.log("✅ AI routes registered");
 
 app.use(notFound);
 app.use(errorHandler);

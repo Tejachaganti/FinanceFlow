@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Wallet,
@@ -22,6 +24,10 @@ const RegisterPage = () => {
     email: "",
     password: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [showPassword, setShowPassword] =
     useState(false);
@@ -32,6 +38,15 @@ const RegisterPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (submitting) return;
+    const nextErrors = {};
+    if (form.name.trim().length < 2) nextErrors.name = "Enter your full name.";
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) nextErrors.email = "Enter a valid email address.";
+    if (form.password.length < 6) nextErrors.password = "Use at least 6 characters.";
+    if (form.password !== confirmPassword) nextErrors.confirm = "Passwords do not match.";
+    if (!acceptedTerms) nextErrors.terms = "Please accept the Terms and Privacy Policy.";
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
     setSubmitting(true);
 
     const success = await register(form);
@@ -62,7 +77,7 @@ const RegisterPage = () => {
 
         <div className="flex w-full justify-center lg:w-1/2">
 
-          <div className="w-full max-w-md">
+          <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} className="w-full max-w-md">
 
             {/* Logo */}
 
@@ -137,7 +152,7 @@ const RegisterPage = () => {
                     className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                   />
 
-                </div>
+                </div>{errors.name && <p className="mt-2 text-xs text-rose-300">{errors.name}</p>}
 
               </div>
 
@@ -170,7 +185,7 @@ const RegisterPage = () => {
                     className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-4 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                   />
 
-                </div>
+                </div>{errors.email && <p className="mt-2 text-xs text-rose-300">{errors.email}</p>}
 
               </div>
 
@@ -225,14 +240,14 @@ const RegisterPage = () => {
                     )}
                   </button>
 
-                </div>
+                </div>{errors.password && <p className="mt-2 text-xs text-rose-300">{errors.password}</p>}
 
               </div>
                             {/* Password Hint */}
 
-              <p className="mt-2 text-xs text-slate-500">
-                Use at least 6 characters to keep your account secure.
-              </p>
+              <div className="mt-3"><div className="h-1.5 overflow-hidden rounded-full bg-slate-800"><div className={`h-full rounded-full transition-all ${form.password.length >= 10 ? "w-full bg-emerald-400" : form.password.length >= 6 ? "w-2/3 bg-amber-400" : "w-1/3 bg-rose-400"}`} /></div><p className="mt-2 text-xs text-slate-500">Use 6+ characters; a longer password is stronger.</p></div>
+              <div className="mt-5"><label className="mb-2 block text-sm font-medium text-slate-300">Confirm password</label><div className="relative"><Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" /><input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Re-enter your password" className="w-full rounded-2xl border border-slate-700 bg-slate-900/60 py-3 pl-12 pr-12 text-white outline-none focus:border-cyan-500" /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">{showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div>{errors.confirm && <p className="mt-2 text-xs text-rose-300">{errors.confirm}</p>}</div>
+              <label className="mt-5 flex items-start gap-2 text-xs leading-5 text-slate-400"><input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-cyan-400" />I agree to the Terms of Service and Privacy Policy.</label>{errors.terms && <p className="mt-2 text-xs text-rose-300">{errors.terms}</p>}
 
               {/* Register Button */}
 
@@ -276,7 +291,7 @@ const RegisterPage = () => {
 
             </form>
 
-          </div>
+          </motion.div>
 
         </div>
 

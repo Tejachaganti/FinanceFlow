@@ -1,11 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import App from "./App.jsx";
-import { AuthProvider } from "./context/AuthContext.jsx";
-import { FinanceProvider } from "./context/FinanceContext.jsx";
+
+import App from "./App";
+
 import "./index.css";
+import "./styles/theme.css";
+
+import { AuthProvider } from "./context/AuthContext";
+import { FinanceProvider } from "./context/FinanceContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -13,7 +16,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <FinanceProvider>
           <App />
-          <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
         </FinanceProvider>
       </AuthProvider>
     </HashRouter>

@@ -1,156 +1,19 @@
-import {
-  BarChart3,
-  LayoutDashboard,
-  PiggyBank,
-  ReceiptText,
-  Settings,
-  Sparkles,
-  ChevronRight,
-} from "lucide-react";
+import { BarChart3, Bell, Bot, FileBarChart, LayoutDashboard, LogOut, PanelLeftClose, PanelLeftOpen, PiggyBank, ReceiptText, Search, Settings, Sparkles } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import useAuth from "../../hooks/useAuth";
 
-const items = [
-  {
-    label: "Dashboard",
-    to: "/app/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Expenses",
-    to: "/app/expenses",
-    icon: ReceiptText,
-  },
-  {
-    label: "Analytics",
-    to: "/app/analytics",
-    icon: BarChart3,
-  },
-  {
-    label: "Budget",
-    to: "/app/budget",
-    icon: PiggyBank,
-  },
-  {
-    label: "Settings",
-    to: "/app/settings",
-    icon: Settings,
-  },
-];
+const primaryItems = [{ label: "Overview", to: "/app/dashboard", icon: LayoutDashboard }, { label: "Expenses", to: "/app/expenses", icon: ReceiptText }, { label: "Budget", to: "/app/budget", icon: PiggyBank }];
+const insightItems = [{ label: "Analytics", to: "/app/analytics", icon: BarChart3 }, { label: "Reports", to: "/app/reports", icon: FileBarChart }, { label: "AI Assistant", to: "/app/ai-assistant", icon: Bot }];
 
-const Sidebar = () => {
-  return (
-    <aside className="flex h-full flex-col rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-6 shadow-2xl">
-
-      {/* Logo */}
-
-      <div>
-
-        <div className="flex items-center gap-3">
-
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg">
-
-            <Sparkles className="text-white" size={24} />
-
-          </div>
-
-          <div>
-
-            <p className="text-xs uppercase tracking-[0.35em] text-cyan-300">
-              FinanceFlow
-            </p>
-
-            <h2 className="text-2xl font-bold text-white">
-              AI Finance
-            </h2>
-
-          </div>
-
-        </div>
-
-        <p className="mt-5 text-sm leading-6 text-slate-400">
-          Smart money management with AI insights, budgeting and analytics.
-        </p>
-
-      </div>
-
-      {/* Navigation */}
-
-      <nav className="mt-10 space-y-3">
-
-        {items.map(({ label, to, icon: Icon }, index) => (
-
-          <motion.div
-            key={label}
-            initial={{ opacity: 0, x: -15 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-          >
-
-            <NavLink
-              to={to}
-              className={({ isActive }) =>
-                `group flex items-center justify-between rounded-2xl px-4 py-3 transition-all duration-300 ${
-                  isActive
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg"
-                    : "text-slate-300 hover:bg-white/10 hover:text-white"
-                }`
-              }
-            >
-              <div className="flex items-center gap-3">
-
-                <Icon size={20} />
-
-                <span className="font-medium">
-                  {label}
-                </span>
-
-              </div>
-
-              <ChevronRight
-                size={16}
-                className="opacity-0 transition group-hover:opacity-100"
-              />
-
-            </NavLink>
-
-          </motion.div>
-
-        ))}
-
-      </nav>
-
-      {/* Bottom Card */}
-
-      <div className="mt-auto rounded-3xl bg-gradient-to-br from-emerald-500/20 via-cyan-500/20 to-blue-500/20 p-5">
-
-        <p className="font-semibold text-white">
-          Financial Goal
-        </p>
-
-        <p className="mt-2 text-sm text-slate-300">
-          Save ₹25,000 this month by keeping your expenses under budget.
-        </p>
-
-        <div className="mt-5">
-
-          <div className="mb-2 flex justify-between text-xs text-slate-300">
-            <span>Progress</span>
-            <span>72%</span>
-          </div>
-
-          <div className="h-3 overflow-hidden rounded-full bg-slate-700">
-
-            <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400" />
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </aside>
-  );
+const Sidebar = ({ collapsed = false, onToggle, onNavigate }) => {
+  const { logout } = useAuth();
+  const renderItem = ({ label, to, icon: Icon }) => <NavLink key={to} to={to} onClick={onNavigate} title={collapsed ? label : undefined}>{({ isActive }) => <motion.div whileHover={{ x: collapsed ? 0 : 3 }} className={`group relative flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${isActive ? "bg-cyan-400/12 text-cyan-200" : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-100"}`}><span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition ${isActive ? "bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20" : "bg-slate-800 text-slate-400 group-hover:text-cyan-300"}`}><Icon size={18} /></span>{!collapsed && <><span className="min-w-0 flex-1 truncate">{label}</span>{isActive && <motion.span layoutId="sidebar-active" className="h-1.5 w-1.5 rounded-full bg-cyan-300" />}</>}</motion.div>}</NavLink>;
+  return <aside className={`flex h-full flex-col rounded-3xl border border-slate-700/60 bg-[#111827]/90 p-3 shadow-2xl shadow-black/15 backdrop-blur-xl transition-all duration-300 ${collapsed ? "lg:p-3" : "lg:p-4"}`}>
+    <div className={`flex items-center ${collapsed ? "justify-center" : "justify-between"} gap-2 px-2 py-2`}><NavLink to="/app/dashboard" onClick={onNavigate} className="flex min-w-0 items-center gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-500/20"><Sparkles size={20} /></span>{!collapsed && <span className="min-w-0"><strong className="block truncate text-sm tracking-wide text-white">FinanceFlow</strong><span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-cyan-300">Finance OS</span></span>}</NavLink>{onToggle && <button aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} onClick={onToggle} className="hidden rounded-xl p-2 text-slate-400 transition hover:bg-slate-800 hover:text-white lg:block">{collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</button>}</div>
+    {!collapsed && <div className="mx-2 mt-5 rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3 text-xs leading-5 text-slate-400"><Sparkles size={14} className="mb-2 text-cyan-300" />Your financial command center.</div>}
+    <nav aria-label="Main navigation" className="mt-6 space-y-6"><div><p className={`mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 ${collapsed ? "sr-only" : ""}`}>Workspace</p><div className="space-y-1">{primaryItems.map(renderItem)}</div></div><div><p className={`mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 ${collapsed ? "sr-only" : ""}`}>Intelligence</p><div className="space-y-1">{insightItems.map(renderItem)}</div></div><div><p className={`mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 ${collapsed ? "sr-only" : ""}`}>Account</p><div className="space-y-1">{renderItem({ label: "Notifications", to: "/app/notifications", icon: Bell })}{renderItem({ label: "Settings", to: "/app/settings", icon: Settings })}</div></div></nav>
+    <div className="mt-auto border-t border-slate-700/60 pt-3"><NavLink to="/app/search" onClick={onNavigate} title={collapsed ? "Search" : undefined} className="mb-1 flex items-center gap-3 rounded-2xl px-3 py-3 text-sm text-slate-400 transition hover:bg-slate-800 hover:text-white"><span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-800"><Search size={18} /></span>{!collapsed && <span>Search <kbd className="ml-2 rounded bg-slate-700 px-1.5 py-0.5 text-[10px]">⌘ K</kbd></span>}</NavLink><button onClick={logout} title={collapsed ? "Sign out" : undefined} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm text-rose-300 transition hover:bg-rose-400/10"><span className="grid h-9 w-9 place-items-center rounded-xl bg-rose-400/10"><LogOut size={18} /></span>{!collapsed && "Sign out"}</button></div>
+  </aside>;
 };
-
 export default Sidebar;

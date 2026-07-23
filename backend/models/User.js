@@ -9,7 +9,9 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: "" },
     currency: { type: String, default: "INR" },
     theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
-    monthlySavingsGoal: { type: Number, default: 0 }
+    monthlySavingsGoal: { type: Number, default: 0 },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false }
   },
   { timestamps: true }
 );

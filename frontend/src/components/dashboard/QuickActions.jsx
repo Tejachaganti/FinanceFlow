@@ -45,11 +45,11 @@ const actions = [
 
 const QuickActions = () => {
   return (
-    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-8">
+    <section className="rounded-3xl border border-slate-700/40 bg-[#131A2A] p-5 sm:p-6 lg:p-8">
 
       {/* Header */}
 
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
 
         <div>
 
@@ -57,28 +57,27 @@ const QuickActions = () => {
             Shortcuts
           </p>
 
-          <h2 className="mt-2 text-2xl font-bold text-white">
+          <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">
             Quick Actions
           </h2>
 
-          <p className="mt-2 text-slate-400">
+          <p className="mt-2 text-sm text-slate-400 sm:text-base">
             Jump to the most frequently used features.
           </p>
 
         </div>
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20">
+        <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20 sm:h-16 sm:w-16">
 
           <Zap
-            size={28}
+            size={24}
             className="text-white"
           />
 
         </div>
 
       </div>
-
-      {/* Action Cards */}
+            {/* Action Cards */}
 
       <div className="space-y-4">
 
@@ -89,23 +88,25 @@ const QuickActions = () => {
             <Link
               key={action.title}
               to={action.to}
-              className="group flex items-center justify-between rounded-3xl border border-slate-700 bg-slate-900/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
+              className="group flex flex-col gap-4 rounded-3xl border border-slate-700 bg-slate-900/60 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10 sm:flex-row sm:items-center sm:justify-between sm:p-5"
             >
 
-              <div className="flex items-center gap-5">
+              {/* Left */}
+
+              <div className="flex items-center gap-4">
 
                 <div
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl ${action.bg}`}
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${action.bg} sm:h-14 sm:w-14`}
                 >
                   <Icon
-                    size={24}
+                    size={22}
                     className={action.color}
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0">
 
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-base font-semibold text-white sm:text-lg">
                     {action.title}
                   </h3>
 
@@ -117,12 +118,18 @@ const QuickActions = () => {
 
               </div>
 
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 transition-all duration-300 group-hover:bg-cyan-500 group-hover:text-white">
+              {/* Right */}
 
-                <ChevronRight
-                  size={18}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
+              <div className="flex justify-end sm:justify-center">
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 transition-all duration-300 group-hover:bg-cyan-500 group-hover:text-white">
+
+                  <ChevronRight
+                    size={18}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
+
+                </div>
 
               </div>
 
@@ -134,9 +141,9 @@ const QuickActions = () => {
 
       {/* Footer */}
 
-      <div className="mt-8 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4">
+      <div className="mt-8 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 sm:p-5">
 
-        <p className="text-sm text-cyan-300">
+        <p className="text-sm leading-6 text-cyan-300 sm:text-base">
           💡 Tip: Keep your expenses updated regularly to receive more accurate AI insights and budget recommendations.
         </p>
 
