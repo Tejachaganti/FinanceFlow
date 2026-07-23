@@ -1,84 +1,207 @@
-# FinanceFlow
+# 💰 FinanceFlow
 
-FinanceFlow is a full-stack personal finance platform for tracking expenses, managing budgets, exploring analytics, generating reports, and receiving AI-assisted financial guidance.
+FinanceFlow is an AI-powered personal finance management platform that helps users track expenses, manage budgets, analyze spending, generate reports, and receive AI-powered financial insights.
 
-## Highlights
+## 🚀 Features
 
-- JWT-authenticated accounts with password recovery via expiring, single-use email links
-- Expense CRUD with attachments, filtering, voice-assisted entry, and category insights
-- Monthly budget planning, income tracking, savings visibility, and budget alerts
-- Analytics, reports, CSV/PDF exports, notifications, global search, and an AI assistant
-- Responsive React UI for desktop and mobile, with a Capacitor Android project
+- 🔐 Secure JWT Authentication
+- 👤 User Profile Management
+- 💳 Expense Tracking (CRUD)
+- 📂 Category-wise Expense Management
+- 🎯 Monthly Budget Planning
+- 📈 Analytics Dashboard
+- 📊 Financial Reports
+- 🤖 AI Financial Assistant (Google Gemini)
+- 🎤 Voice Expense Entry
+- 🔔 Notifications
+- 🔍 Global Search
+- 📄 PDF & CSV Report Export
+- 📱 Fully Responsive Design
 
-## Tech stack
+---
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React, Vite, Tailwind CSS, React Router, Framer Motion, Recharts |
-| Backend | Node.js, Express, Mongoose, JWT, bcrypt, Nodemailer |
-| Data | MongoDB Atlas |
-| AI | Google GenAI (server-side only) |
-| Deployment | Vercel, Render, MongoDB Atlas |
+## 🛠 Tech Stack
 
-## Architecture
+### Frontend
+- React.js
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Recharts
+- Framer Motion
 
-`frontend` is a Vite SPA using an authenticated Axios client and route-level code splitting. `backend` exposes protected REST endpoints for finance, profile, analytics, AI, notifications, and password recovery. MongoDB stores user-scoped records.
+### Backend
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- bcryptjs
+- Nodemailer
 
-## Local development
+### AI
+- Google Gemini API (@google/genai)
 
-```bash
-git clone <your-repository-url>
-cd financeflow
-cd backend && npm install
-cd ../frontend && npm install
+### Deployment
+- Frontend → Vercel
+- Backend → Render
+- Database → MongoDB Atlas
+
+---
+
+## 📂 Project Structure
+
+```
+FinanceFlow
+│
+├── frontend
+│   ├── src
+│   ├── public
+│   └── package.json
+│
+├── backend
+│   ├── controllers
+│   ├── routes
+│   ├── middleware
+│   ├── models
+│   ├── services
+│   ├── utils
+│   └── package.json
+│
+└── README.md
 ```
 
-Create `backend/.env`:
+---
+
+## ⚙️ Backend Environment Variables
+
+Create a `.env` file inside the **backend** folder.
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://...
-JWT_SECRET=use_a_long_random_secret
-GEMINI_API_KEY=...
+
+MONGODB_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+GEMINI_API_KEY=your_google_gemini_api_key
+
 FRONTEND_URL=http://localhost:5173
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=...
-SMTP_PASS=...
-EMAIL_FROM="FinanceFlow <no-reply@example.com>"
 ```
 
-Create `frontend/.env`:
+## ⚙️ Frontend Environment Variables
+
+Create a `.env` file inside the **frontend** folder.
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Start each service:
+For production:
 
-```bash
-cd backend && npm run dev
-cd frontend && npm run dev
+```env
+VITE_API_URL=https://your-render-backend.onrender.com/api
 ```
 
-## Deployment
+## 🖥 Local Installation
 
-Deploy the frontend to Vercel with `VITE_API_URL` set to the public backend `/api` URL. Deploy `backend` to Render with the environment variables above, set `FRONTEND_URL` to the Vercel URL, configure MongoDB Atlas network access, and provide valid SMTP credentials for password-reset emails.
+Clone the repository
 
-Before production, configure a strict CORS allowlist, use a strong JWT secret, and verify SMTP sender/domain settings.
+```bash
+git clone https://github.com/yourusername/FinanceFlow.git
+```
 
-## Screenshots
+Install backend dependencies
 
-Add screenshots under `screenshots/` for Landing, Dashboard, Expenses, Analytics, Budget, Reports, and AI Assistant.
+```bash
+cd backend
+npm install
+```
 
-## Future enhancements
+Install frontend dependencies
 
-- HttpOnly-cookie session migration
-- Automated unit, API, and browser E2E tests
-- Excel export endpoint and scheduled reports
-- Investment and recurring-expense tracking
+```bash
+cd ../frontend
+npm install
+```
 
-## License
+Start backend
 
-MIT
+```bash
+npm run dev
+```
+
+Start frontend
+
+```bash
+npm run dev
+```
+
+---
+
+## 🌐 Deployment
+
+### Frontend (Vercel)
+
+Set
+
+```env
+VITE_API_URL=https://your-render-backend.onrender.com/api
+```
+
+Deploy the **frontend** folder.
+
+---
+
+### Backend (Render)
+
+Configure these Environment Variables:
+
+- PORT
+- MONGODB_URI
+- JWT_SECRET
+- GEMINI_API_KEY
+- FRONTEND_URL
+
+Deploy the **backend** folder.
+
+---
+
+## 📸 Screenshots
+
+Add screenshots inside the `screenshots/` folder.
+
+- Landing Page
+- Login
+- Dashboard
+- Expenses
+- Budgets
+- Analytics
+- Reports
+- AI Assistant
+
+---
+
+## 🔮 Future Enhancements
+
+- Investment Tracking
+- Recurring Expenses
+- Savings Goals
+- Bill Reminders
+- Mobile App
+- Multi-Currency Support
+
+---
+
+## 👨‍💻 Developer
+
+**Chaganti Naga Veera Satya Teja**
+
+- Full Stack Developer
+- React.js • Node.js • MongoDB • Express.js
+- AI & Finance Application Developer
+
+---
+
+⭐ If you like this project, consider giving it a star!
