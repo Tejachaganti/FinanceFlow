@@ -26,63 +26,53 @@ export const sendPasswordResetEmail = async ({ to, name, resetUrl }) => {
 
 */
 
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const getTransport = () => {
-  if (
-    !process.env.SMTP_HOST ||
-    !process.env.SMTP_PORT ||
-    !process.env.SMTP_USER ||
-    !process.env.SMTP_PASS
-  ) {
-    throw new Error("Email delivery is not configured.");
-  }
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-};
-
-export const sendPasswordResetEmail = async ({ to, name, resetUrl }) => {
+export const sendPasswordResetEmail = async ({
+  to,
+  name,
+  resetUrl,
+}) => {
   try {
-    console.log("🔥 sendPasswordResetEmail CALLED");
-    console.log("SMTP_USER:", process.env.SMTP_USER);
-    console.log("EMAIL_FROM:", process.env.EMAIL_FROM);
-    console.log("Sending To:", to);
+    console.log("📧 Sending email with Resend...");
 
-    const transport = getTransport();
-
-    console.log("📧 Verifying SMTP...");
-    await transport.verify();
-    console.log("✅ SMTP verified");
-
-    const info = await transport.sendMail({
-      from: process.env.EMAIL_FROM,
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "onboarding@resend.dev",
       to,
       subject: "Reset your FinanceFlow password",
-      text: `Hi ${name}, reset your FinanceFlow password: ${resetUrl}`,
       html: `
         <h2>FinanceFlow Password Reset</h2>
         <p>Hi ${name},</p>
-        <p>Click below to reset your password:</p>
-        <a href="${resetUrl}">${resetUrl}</a>
+        <p>Click the button below to reset your password.</p>
+
+        <p>
+          <a href="${resetUrl}"
+             style="
+               background:#0ea5e9;
+               color:white;
+               padding:12px 20px;
+               text-decoration:none;
+               border-radius:6px;">
+             Reset Password
+          </a>
+        </p>
+
+        <p>This link expires in 15 minutes.</p>
       `,
     });
 
-    console.log("✅ Email sent successfully");
-    console.log("Message ID:", info.messageId);
-    console.log("Response:", info.response);
+    if (error) {
+      throw error;
+    }
 
-    return info;
+    console.log("✅ Email sent");
+    console.log(data);
+
+    return data;
   } catch (err) {
-    console.error("❌ EMAIL ERROR");
-    console.error(err);
+    console.error("❌ Resend Error:", err);
     throw err;
   }
 };
