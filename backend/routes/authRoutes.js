@@ -1,5 +1,13 @@
 import express from "express";
-import { forgotPassword, getCurrentUser, loginUser, registerUser, resetPassword } from "../controllers/authController.js";
+import {
+  forgotPassword,
+  getCurrentUser,
+  loginUser,
+  registerUser,
+  resetPassword,
+  changePassword,
+  deleteAccount,
+} from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { changePassword } from "../controllers/authController.js";
 
