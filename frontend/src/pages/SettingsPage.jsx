@@ -27,6 +27,11 @@ const SettingsPage = () => {
     monthlySavingsGoal: 0,
     avatar: null,
   });
+  const [passwordData, setPasswordData] = useState({
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
 
   useEffect(() => {
     if (user) {
@@ -50,6 +55,13 @@ const SettingsPage = () => {
       [name]: files ? files[0] : value,
     }));
   };
+
+  const handlePasswordChange = (e) => {
+  setPasswordData({
+    ...passwordData,
+    [e.target.name]: e.target.value,
+  });
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,6 +96,25 @@ const SettingsPage = () => {
       );
     }
   };
+
+  const changePassword = async () => {
+  try {
+    await api.put("/auth/change-password", passwordData);
+
+    toast.success("Password changed successfully.");
+
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      "Unable to change password."
+    );
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#0B1120]">
@@ -608,33 +639,39 @@ const SettingsPage = () => {
   <div className="space-y-6">
 
     <input
-      type="password"
-      placeholder="Current Password"
-      className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
-    />
+  type="password"
+  name="currentPassword"
+  placeholder="Current Password"
+  value={passwordData.currentPassword}
+  onChange={handlePasswordChange}
+  className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
+/>
 
-    <input
-      type="password"
-      placeholder="New Password"
-      className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
-    />
+<input
+  type="password"
+  name="newPassword"
+  placeholder="New Password"
+  value={passwordData.newPassword}
+  onChange={handlePasswordChange}
+  className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
+/>
 
-    <input
-      type="password"
-      placeholder="Confirm Password"
-      className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
-    />
+<input
+  type="password"
+  name="confirmPassword"
+  placeholder="Confirm Password"
+  value={passwordData.confirmPassword}
+  onChange={handlePasswordChange}
+  className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-white focus:border-red-400 focus:outline-none"
+/>
 
-   
-
-    <div className="flex justify-end">
-
-      <button
-        className="rounded-2xl bg-red-500 px-8 py-3 font-semibold text-white transition hover:bg-red-600"
-      >
-        Change Password
-      </button>
-
+<button
+  type="button"
+  onClick={changePassword}
+  className="rounded-2xl bg-red-500 px-8 py-3 font-semibold text-white transition hover:bg-red-600"
+>
+  Change Password
+</button>
     </div>
 
   </div>
@@ -810,7 +847,7 @@ const SettingsPage = () => {
 
 </div>
      </div>
-  </div>
+  
 );
 
 };

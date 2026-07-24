@@ -125,3 +125,54 @@ export const resetPassword = async (req, res, next) => {
     res.json({ success: true, message: "Password reset successfully. You can now sign in." });
   } catch (error) { next(error); }
 };
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      const error = new Error("All fields are required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (newPassword !== confirmPassword) {
+      const error = new Error("Passwords do not match.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (newPassword.length < 6) {
+      const error = new Error(
+        "Password must be at least 6 characters."
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await User.findById(req.user._id);
+
+    const isMatch = await user.matchPassword(currentPassword);
+
+    if (!isMatch) {
+      const error = new Error("Current password is incorrect.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    user.password = newPassword;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

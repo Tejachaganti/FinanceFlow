@@ -186,12 +186,12 @@ const LoginPage = () => {
               <div className="mt-4 flex items-center justify-between gap-3">
                 <label className="flex items-center gap-2 text-sm text-slate-400"><input type="checkbox" checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} className="h-4 w-4 rounded border-slate-600 bg-slate-900 accent-cyan-400" /> Remember me</label>
 
-                <Link to="/forgot-password"
-                  type="button"
-                  onClick={() => toast("Password reset is not enabled on this FinanceFlow server yet.", { icon: "ℹ️" })} className="text-sm text-cyan-400 transition hover:text-cyan-300"
-                >
-                  Forgot Password?
-                </Link>
+                <Link
+  to="/forgot-password"
+  className="text-sm text-cyan-400 transition hover:text-cyan-300"
+>
+  Forgot Password?
+</Link>
 
               </div>
 
