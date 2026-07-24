@@ -1,8 +1,17 @@
 import User from "../models/User.js";
 import Income from "../models/Income.js";
 
-export const getProfile = async (req, res) => {
-  res.json({ success: true, profile: req.user });
+export const getProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    res.json({
+      success: true,
+      profile: user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateProfile = async (req, res, next) => {
@@ -15,6 +24,7 @@ export const updateProfile = async (req, res, next) => {
     }
 
     user.name = req.body.name || user.name;
+    user.phone = req.body.phone ?? user.phone;
     user.currency = req.body.currency || user.currency;
     user.theme = req.body.theme || user.theme;
     user.monthlySavingsGoal = req.body.monthlySavingsGoal ?? user.monthlySavingsGoal;
@@ -27,14 +37,16 @@ export const updateProfile = async (req, res, next) => {
     res.json({
       success: true,
       profile: {
-        id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        currency: updatedUser.currency,
-        theme: updatedUser.theme,
-        avatar: updatedUser.avatar,
-        monthlySavingsGoal: updatedUser.monthlySavingsGoal
-      }
+  id: updatedUser._id,
+  name: updatedUser.name,
+  email: updatedUser.email,
+  phone: updatedUser.phone,
+  currency: updatedUser.currency,
+  theme: updatedUser.theme,
+  avatar: updatedUser.avatar,
+  monthlySavingsGoal: updatedUser.monthlySavingsGoal,
+  createdAt: updatedUser.createdAt
+}
     });
   } catch (error) {
     next(error);

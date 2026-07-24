@@ -1,5 +1,8 @@
 import Expense from "../models/Expense.js";
 import { buildExpenseFilters, getSortOption } from "../utils/queryHelpers.js";
+import { createNotification } from "../services/notifications.service.js";
+
+
 
 // Category Normalization
 const CATEGORY_MAP = {
@@ -95,6 +98,12 @@ payload.category = normalizeCategory(payload.category);
       payload.receiptUrl = `/uploads/${req.file.filename}`;
     }
     const expense = await Expense.create(payload);
+    await createNotification({
+  user: req.user._id,
+  title: "Expense Added",
+  message: `₹${expense.amount} spent on ${expense.category}.`,
+  type: "info",
+});
     res.status(201).json({ success: true, expense });
   } catch (error) {
     next(error);
@@ -125,6 +134,12 @@ export const updateExpense = async (req, res, next) => {
     }
 
     const updatedExpense = await expense.save();
+    await createNotification({
+  user: req.user._id,
+  title: "Expense Updated",
+  message: `Expense "${updatedExpense.category}" was updated.`,
+  type: "info",
+});
 
     res.json({
       success: true,
@@ -143,6 +158,12 @@ export const deleteExpense = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    await createNotification({
+  user: req.user._id,
+  title: "Expense Deleted",
+  message: `Expense "${expense.category}" was deleted.`,
+  type: "warning",
+});
     res.json({ success: true, message: "Expense deleted successfully." });
   } catch (error) {
     next(error);

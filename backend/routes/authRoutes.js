@@ -15,4 +15,5 @@ router.put(
     protect,
     changePassword
 );
+router.delete("/delete-account", protect, deleteAccount);
 export default router;

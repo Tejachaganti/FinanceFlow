@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   User,
@@ -16,6 +17,7 @@ import api from "../services/api";
 import { DEFAULT_CURRENCY } from "../utils/formatters";
 
 const SettingsPage = () => {
+  const navigate = useNavigate();
   const { user, setUser, applyTheme } = useAuth();
 
   const [profile, setProfile] = useState({
@@ -112,6 +114,33 @@ const SettingsPage = () => {
     toast.error(
       error.response?.data?.message ||
       "Unable to change password."
+    );
+  }
+};
+
+const deleteAccount = async () => {
+  const password = window.prompt(
+    "Enter your password to permanently delete your account:"
+  );
+
+  if (!password) return;
+
+  try {
+    await api.delete("/auth/delete-account", {
+      data: { password },
+    });
+
+    toast.success("Account deleted successfully.");
+
+    localStorage.removeItem("token");
+
+    setUser(null);
+
+    navigate("/login");
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      "Unable to delete account."
     );
   }
 };
@@ -327,7 +356,14 @@ const SettingsPage = () => {
 
         <input
           type="text"
-          value="July 2026"
+          value={
+  user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })
+    : "-"
+}
           readOnly
           className="w-full rounded-2xl border border-slate-700 bg-slate-800 px-5 py-3 text-slate-400"
         />
@@ -515,12 +551,14 @@ const SettingsPage = () => {
 
     <button
       type="button"
-      onClick={() =>
-        setProfile((prev) => ({
-          ...prev,
-          theme: "light",
-        }))
-      }
+     onClick={() => {
+  setProfile((prev) => ({
+    ...prev,
+    theme: "light",
+  }));
+
+  applyTheme("light");
+}}
       className={`group rounded-3xl border p-6 text-left transition-all duration-300 hover:scale-[1.02]
       ${
         profile.theme === "light"
@@ -563,12 +601,14 @@ const SettingsPage = () => {
 
     <button
       type="button"
-      onClick={() =>
-        setProfile((prev) => ({
-          ...prev,
-          theme: "dark",
-        }))
-      }
+      onClick={() => {
+  setProfile((prev) => ({
+    ...prev,
+    theme: "dark",
+  }));
+
+  applyTheme("dark");
+}}
       className={`group rounded-3xl border p-6 text-left transition-all duration-300 hover:scale-[1.02]
       ${
         profile.theme === "dark"
@@ -606,6 +646,45 @@ const SettingsPage = () => {
       </p>
 
     </button>
+    <button
+  type="button"
+  onClick={() => {
+    setProfile((prev) => ({
+      ...prev,
+      theme: "system",
+    }));
+
+    applyTheme("system");
+  }}
+  className={`group rounded-3xl border p-6 text-left transition-all duration-300 hover:scale-[1.02]
+    ${
+      profile.theme === "system"
+        ? "border-cyan-500 shadow-lg shadow-cyan-500/20"
+        : "border-slate-700"
+    }`}
+>
+  <div className="rounded-2xl border border-slate-700 bg-gradient-to-r from-white to-slate-900 p-5">
+    <div className="mb-4 flex gap-2">
+      <div className="h-3 w-3 rounded-full bg-red-400" />
+      <div className="h-3 w-3 rounded-full bg-yellow-400" />
+      <div className="h-3 w-3 rounded-full bg-green-400" />
+    </div>
+
+    <div className="space-y-2">
+      <div className="h-4 w-3/4 rounded bg-slate-500" />
+      <div className="h-4 w-full rounded bg-slate-400" />
+      <div className="h-4 w-2/3 rounded bg-slate-600" />
+    </div>
+  </div>
+
+  <h3 className="mt-5 text-xl font-bold text-white">
+    💻 System Theme
+  </h3>
+
+  <p className="mt-2 text-slate-400">
+    Automatically follows your operating system appearance.
+  </p>
+</button>
 
   </div>
 
@@ -748,9 +827,14 @@ const SettingsPage = () => {
         Member Since
       </p>
 
-      <h3 className="mt-2 text-lg font-semibold text-white">
-        July 2026
-      </h3>
+     <h3 className="mt-2 text-lg font-semibold text-white">
+  {user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })
+    : "-"}
+</h3>
 
     </div>
 
@@ -810,11 +894,12 @@ const SettingsPage = () => {
     <div className="flex lg:items-end">
 
       <button
-        type="button"
-        className="rounded-2xl bg-red-600 px-8 py-3 font-semibold text-white transition hover:bg-red-700"
-      >
-        Delete Account
-      </button>
+  type="button"
+  onClick={deleteAccount}
+  className="rounded-2xl bg-red-600 px-8 py-3 font-semibold text-white transition hover:bg-red-700"
+>
+  Delete Account
+</button>
 
     </div>
 

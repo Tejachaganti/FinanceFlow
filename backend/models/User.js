@@ -3,13 +3,14 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true, minlength: 6 },
-    avatar: { type: String, default: "" },
-    currency: { type: String, default: "INR" },
-    theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
-    monthlySavingsGoal: { type: Number, default: 0 },
+   name: { type: String, required: true, trim: true },
+email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+password: { type: String, required: true, minlength: 6 },
+avatar: { type: String, default: "" },
+phone: { type: String, default: "", trim: true },
+currency: { type: String, default: "INR" },
+theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
+monthlySavingsGoal: { type: Number, default: 0 },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false }
   },
