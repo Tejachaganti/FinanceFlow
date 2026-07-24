@@ -89,26 +89,66 @@ export const getCurrentUser = async (req, res) => {
 
 export const forgotPassword = async (req, res, next) => {
   try {
-    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
-    const response = { success: true, message: "If an account exists for that email, a reset link has been sent." };
-    if (!/^\S+@\S+\.\S+$/.test(email)) return res.json(response);
-    const user = await User.findOne({ email }).select("+resetPasswordToken +resetPasswordExpires");
-    if (!user) return res.json(response);
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    user.resetPasswordToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-    user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
-    await user.save({ validateBeforeSave: false });
-    const baseUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:5173";
-    try {
-      await sendPasswordResetEmail({ to: user.email, name: user.name, resetUrl: `${baseUrl.replace(/\/$/, "")}/reset-password/${rawToken}` });
-    } catch (error) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-      await user.save({ validateBeforeSave: false });
-      throw error;
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : "";
+
+    const response = {
+      success: true,
+      message: "If an account exists for that email, a reset link has been sent.",
+    };
+
+    console.log("===== FORGOT PASSWORD START =====");
+    console.log("Requested email:", email);
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      console.log("Invalid email format");
+      return res.json(response);
     }
+
+    const user = await User.findOne({ email }).select(
+      "+resetPasswordToken +resetPasswordExpires"
+    );
+
+    console.log("User found:", !!user);
+
+    if (!user) {
+      console.log("User not found");
+      return res.json(response);
+    }
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+
+    user.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
+
+    user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+    await user.save({ validateBeforeSave: false });
+
+    const baseUrl =
+      process.env.FRONTEND_URL ||
+      process.env.CLIENT_URL ||
+      "http://localhost:5173";
+
+    console.log("About to send email...");
+
+    await sendPasswordResetEmail({
+      to: user.email,
+      name: user.name,
+      resetUrl: `${baseUrl.replace(/\/$/, "")}/reset-password/${rawToken}`,
+    });
+
+    console.log("Email function completed");
+
     return res.json(response);
-  } catch (error) { next(error); }
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    next(error);
+  }
 };
 
 export const resetPassword = async (req, res, next) => {
