@@ -27,20 +27,21 @@ const expenseSchema = new mongoose.Schema(
       min: 0,
     },
 
-    category: {
-      type: String,
-      enum: [
-        "Food",
-        "Travel",
-        "Shopping",
-        "Bills",
-        "Education",
-        "Entertainment",
-        "Healthcare",
-        "Others",
-      ],
-      default: "Others",
-    },
+   category: {
+  type: String,
+  enum: [
+    "Food",
+    "Travel",
+    "Shopping",
+    "Bills",
+    "Education",
+    "Entertainment",
+    "Healthcare",
+    "Others",
+  ],
+  default: "Others",
+},
+
 
     date: {
       type: Date,
