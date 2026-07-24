@@ -86,3 +86,21 @@ export const sendPasswordResetEmail = async ({ to, name, resetUrl }) => {
     throw err;
   }
 };
+console.log("===== FORGOT PASSWORD START =====");
+console.log("Requested email:", email);
+
+const user = await User.findOne({ email }).select("+resetPasswordToken +resetPasswordExpires");
+
+console.log("User found:", !!user);
+
+if (!user) return res.json(response);
+
+console.log("About to send email...");
+
+await sendPasswordResetEmail({
+  to: user.email,
+  name: user.name,
+  resetUrl: `${baseUrl.replace(/\/$/, "")}/reset-password/${rawToken}`,
+});
+
+console.log("Email function completed");
